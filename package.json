@@ -1,0 +1,11 @@
+{
+  "name": "comploy",
+  "version": "1.0.0",
+  "description": "Comploy is used by managers and employees to get to know their collageaus and theirs skills and experience in order to achieve better projects results.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Mumtaz Begum Mohammed & Mustafa el Ouali",
+  "license": "ISC"
+}
