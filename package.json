@@ -1,11 +1,23 @@
 {
-  "name": "comploy",
+  "name": "sequelize_restaurant_example",
   "version": "1.0.0",
-  "description": "Comploy is used by managers and employees to get to know their collageaus and theirs skills and experience in order to achieve better projects results.",
-  "main": "index.js",
+  "description": "",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Mumtaz Begum Mohammed & Mustafa el Ouali",
-  "license": "ISC"
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^1.0.3",
+    "body-parser": "^1.17.2",
+    "connect-session-sequelize": "^4.1.0",
+    "cookie-parser": "^1.4.3",
+    "express": "^4.15.4",
+    "express-session": "^1.15.5",
+    "pg": "^7.1.0",
+    "pug": "^2.0.0-rc.3",
+    "sequelize": "^4.4.2"
+  }
 }
