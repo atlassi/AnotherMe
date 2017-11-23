@@ -9,9 +9,37 @@ html
       li
         a(href="index.pug") Home
       li
-        a(href="search.pug") Search books
+        a(href="#")
       li
-        a(href="addEntry.pug") Add Entry 
+        a(href="")  
       li
-        a(href="#") About Me
+        a(href="#")
   // header
+  .signup
+    form.input-field(action='/signup', method='POST', autocomplete='off')
+      h2 Sign Up!
+      input.name-signup(type='text', name='name', placeholder="Enter Your Name",autocomplete='off')
+      br
+      input.email-signup(type='text', name='email', placeholder="Enter your Email")
+      br
+      input.password-signup(type='password', name='password', placeholder= "Give a password")
+      br
+      button.btn_signup(type='submit', name="sign-up") Sign Up
+      p.para Already registered!
+        a.btn_login(href='#', role='button') login
+
+  .login
+    .login-field
+      form.login-form(action='/login', method='POST', autocomplete='off')
+        h2 Login
+        label(for='email') Enter Your Email
+        br
+        input.email(type='text', name='email', placeholder="example@email.com")
+        br
+        label(for='password') your password
+        br
+        input.password(type='password', name='password', placeholder= "****")
+        br
+        button.btn_signup(type='submit', name="sign-up") Login
+        p Not registered yet!
+          a.btn_login(href='/index.pug', role='button') Sign-up
