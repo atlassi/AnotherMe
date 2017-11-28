@@ -6,8 +6,8 @@ const bcrypt = require('bcrypt');
 const session = require('express-session');
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
 
-//<------configuring dependencies------->
 
+//<------configuring dependencies------->
 const app = express();
 
 
@@ -42,7 +42,7 @@ const User = sequelize.define('users',{
 	phone: Sequelize.INTEGER,
 	city: Sequelize.STRING,
 	address: Sequelize.STRING,
-	availability: Sequelize.STRING,
+	availability: Sequelize.BOOLEAN,
 	serviceProvider: Sequelize.BOOLEAN
 },{ timestamps: false
 })
@@ -54,7 +54,8 @@ const Role = sequelize.define('roles',{
 })
 
 //<----defining relation between tables---->
-User.hasMany(Role)
+User.hasMany(Role);
+Role.belongsTo(User);
 
 //<<-----------------ROUTES-------------------->>
 
@@ -64,10 +65,7 @@ app.get('/', function(req,res){
 	res.render("index")
 })
 
-//<----search page(get)------>
-app.get('search',function(req,res){
-	res.render("search")
-})
+
 
 //<-----SIGNUP(post)------>
 app.post('/signup',function(req,res){
@@ -97,13 +95,59 @@ app.post('/login',function(req,res){
 	res.redirect('/')
 })
 
-//<----Search for service providers(post)-->
-app.post('/search',function(req,res){
-	res.render('index')
+//<--------------Search GET------------->
+app.get('/search',function(req,res){
+	res.render('search')
+})
+
+//<-------AJAX request search bar--------->
+app.get('/submit',(req,res)=>{
+    var service = req.query.service;
+    console.log(`service input----------->${service}`)
+    Role.findAll({
+        where:{
+            service: service
+        },
+        include:[{
+            model: User
+        }]
+    }).then(users=>{
+        users = users.map(data=>{
+            return{
+                users: data.user
+            }
+        })
+        var output = users;
+        console.log(`users with service---------->${JSON.stringify(users)}`)
+        res.send({output:output})
+    }).catch(err=>{
+        console.log(err)
+    })
+    
+})
+
+//<--------add roles-------->
+app.post('/addroles',function(req,res){
+    let role = req.body.role;
+    let price = req.body.price;
+    let id = req.body.id;
+    User.findOne({
+        where:{
+            id: id
+        }
+    }).then(user=>{
+        user.createRole({
+            service: role,
+            price: price
+
+        })
+        res.redirect('/search')
+    })
+
 })
 
 //<-------ADD DETAILS(post)-------->
-app.post('/addDetals',function(req,res){
+app.post('/addDetails',function(req,res){
 	res.render('index')
 })
 
@@ -111,6 +155,6 @@ app.post('/addDetals',function(req,res){
 
 sequelize.sync()
 //<--------SERVER PORT----------->
-app.listen(4000, function() {
-    console.log("app is listening at port 4000")
+app.listen(3001, function() {
+    console.log("app is listening at port 3000")
 })
