@@ -60,11 +60,18 @@ Role.belongsTo(User);
 //<<-----------------ROUTES-------------------->>
 
 //<----default page------->
-app.get('/', function(req,res){
+app.get('/', (req,res)=>{
 	let user = req.session.user
-	res.render("index")
+	res.render("home.pug")
 })
-
+app.get('/signup',(req,res)=>{
+    let user = req.session.user
+    res.render("signup.pug")
+})
+app.get('/login',(req,res)=>{
+    let user = req.session.user
+    res.render("login.pug")
+})
 
 
 //<-----SIGNUP(post)------>
@@ -72,6 +79,7 @@ app.post('/signup',function(req,res){
 
 let inputname = req.body.name;
     let email = req.body.email;
+    let city = req.body.city;
     let password = req.body.password;
 
     bcrypt.genSalt(10, function(err, salt) {
@@ -79,10 +87,11 @@ let inputname = req.body.name;
             User.create({
                 name: inputname,
                 email: email,
-                password: hash
+                password: hash,
+                city:city
             }).then((user) => {
                 req.session.user = user;
-                res.render('index.pug')
+                res.render('signup.pug')
             })
 
         });
@@ -124,6 +133,13 @@ app.get('/submit',(req,res)=>{
         console.log(err)
     })
     
+})
+app.get('/selected',(req,res)=>{
+    let input = req.query.selected;
+    console.log(`SELECTED NAME-------->${input}`)
+    let message =`hello ${input}` 
+    res.send({message: message})
+
 })
 
 //<--------add roles-------->

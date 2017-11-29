@@ -1,0 +1,45 @@
+h3{
+text-align: center;
+}
+.submit-signup{
+	margin: 2px 2px 2px 90px;
+	background-color: pink;
+	color: hotpink;
+
+}
+.submit-login{
+	margin: 2px 2px 2px 90px;
+	background-color: pink;
+	color: white;
+
+}
+.submit-search{
+	margin: 2px 2px 2px 158px;
+	background-color: pink;
+	color: white;
+
+}
+.input-field{
+	border: solid;
+    border-color: gray;
+    margin: 41px 2px 2px 2px;
+    padding: 2px 18px 14px 19px;
+}
+/*.display:hover{
+	background-color: pink;
+	color: black;
+}*/
+li{
+	list-style: none;
+	text-align: center;
+
+}
+li:hover{
+	background-color: pink
+
+}
+a{
+	text-decoration: none;
+	text-align: center;
+	color: black;
+}

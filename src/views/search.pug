@@ -1,41 +1,58 @@
 doctype html
-html
-  head
-    title Another me
-    link(rel="stylesheet", type="text/css", href="css/style.css")
-  body
-  div.header
-    ul.nav     
-      li
-        a(href="/") Home
-      li
-        a(href="#")
-      li
-        a(href="")  
-      li
-        a(href="#")
-  // header
-  form.input-roles(action='/addroles', method='post',autocomplete= 'off')
-    input(type='text', name='role', placeholder='add service')
-    br
-    br
-    input(type='text', name='price', placeholder='add price/hr')
-    br
-    br
-    input(type='text', name='id',placeholder='user id')
-    br
-    br
-    input(type='submit', value= 'Add services')
-  //add roles
-  h3 Search by service
-  //- form.input-search
-  select.search(name = 'service')
-    option(value="plumber") plumber
-    option(value="programmer") programmer
-    option(value="electrician") electrician
-    option(value="mechanic") mechanic
-  input.submit(type='submit', value= 'search')
-  p.display
+head
+  title Another Me
+  meta(charset='utf-8')
+  meta(name='viewport', content='width=device-width, initial-scale=1')
+  link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css')
+  link(rel="stylesheet", type="text/css", href="css/style.css")
+  script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js')
+  script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js')
+body
+  nav.navbar.navbar-default
+    .container
+      .navbar-header
+        a.navbar-brand(href='#') Another me
+      ul.nav.navbar-nav
+        li.active
+          a(href='/') Home
+        li
+          a(href='#') Contact us
+        li
+          a(href='#') About us
+        li
+          a(href='#') Profile
+      ul.nav.navbar-nav.navbar-right
+        li
+          a(href='#')
+            span.glyphicon.glyphicon-log-out.login-link
+            |  Logout
+  //- form.input-roles(action='/addroles', method='post',autocomplete= 'off')
+  //-   input(type='text', name='role', placeholder='add service')
+  //-   br
+  //-   br
+  //-   input(type='text', name='price', placeholder='add price/hr')
+  //-   br
+  //-   br
+  //-   input(type='text', name='id',placeholder='user id')
+  //-   br
+  //-   br
+  //-   input(type='submit', value= 'Add services')
+  //- //add roles
+  div.rows.search-row
+    div.col-lg-4
+    div.col-lg-4
+      h3 Search by service
+      select.search.form-control(name = 'service')
+        option(value="plumber") plumber
+        option(value="programmer") programmer
+        option(value="electrician") electrician
+        option(value="mechanic") mechanic
+      br
+      input.btn.btn-default.submit-search.submit(type='submit', value= 'search')
+      br
+      p.display
+
+  
   //AJAX
   script(src='https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.1.min.js')
   script.
@@ -43,17 +60,25 @@ html
       var service = $('.search').val()
       console.log(service);
       $.get('/submit',{service:service} , function(data){
-      console.log("getting something----->"+ JSON.stringify(data))
         var users = data.output;
         var allUsers = ""
 
         for(var i=0; i<users.length; i++){
-        allUsers = allUsers+users[i].users.name+'<br>'
+        //- allUsers = allUsers+users[i].users.name+" ,   "+ "    "+"  "+ users[i].users.city+'<br>'
+        allUsers = allUsers +`<p><li><a> ${users[i].users.name}</a>     near ${users[i].users.city}</li> <p> <br>`
        
         }
-        $('.display').append(`<p>${allUsers}</p>`)
-        $('p').click(function(){
+        $('.display').html(`<li>${allUsers}</li>`)
+        $('a').click(function(){
+         var selected =  $(this).text()
+         $.get('/selected',{selected: selected},function(data){
+         var message = data.message;
+         console.log(message)
+
+         })
+
         console.log("it worked")
+           
 
         })
 

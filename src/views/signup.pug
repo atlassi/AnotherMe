@@ -1,0 +1,51 @@
+doctype html
+head
+  title Another Me
+  meta(charset='utf-8')
+  meta(name='viewport', content='width=device-width, initial-scale=1')
+  link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css')
+  link(rel="stylesheet", type="text/css", href="css/style.css")
+  script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js')
+  script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js')
+body
+  nav.navbar.navbar-default
+    .container
+      .navbar-header
+        a.navbar-brand(href='#') Another me
+      ul.nav.navbar-nav
+        li.active
+          a(href='/') Home
+        li
+          a(href='#') Contact us
+        li
+          a(href='#') About us
+      ul.nav.navbar-nav.navbar-right
+        li
+          a(href='/signup')
+            span.glyphicon.glyphicon-user
+            |  Sign Up
+        li
+          a(href='/login')
+            span.glyphicon.glyphicon-log-in.login-link
+            |  Login
+
+  .container
+    div.row.signup
+      div.col-lg-4
+      div.col-lg-4
+        form.input-field(action='/signup', method='post', autocomplete='off')
+          h3 Create an account
+          input#name.form-control(type='text', name='name', placeholder="Enter Your Name",autocomplete='off')
+          br
+          input#email.form-control(type='email', placeholder='example@email.com', name='email')
+          br
+          input#pwd.form-control(type='text', placeholder='Enter city', name='city')
+          br
+          input#pwd.form-control(type='password', placeholder='Enter password', name='password')
+          br
+          //- input#pwd.form-control(type='password', placeholder='confirm password', name='password2')
+          //- br
+          button.btn.btn-default.submit-signup(type='submit') Submit
+      div.col-lg-4
+
+  
