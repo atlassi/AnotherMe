@@ -42,21 +42,21 @@ body
     div.col-lg-4
     div.col-lg-4
       h3 Search by service
-      select.search.form-control(name = 'service')
-        option(value="plumber") plumber
-        option(value="programmer") programmer
-        option(value="electrician") electrician
-        option(value="mechanic") mechanic
-      br
-      input.btn.btn-default.submit-search.submit(type='submit', value= 'search')
-      br
+      select.search.form-control.select(name = 'service')
+        //- each role in roles
+        //-   option.option(value= role.id) #{role.service}
+        option.option(value="") services
+        option.option(value="programmer") programmer
+        option.option(value="electrician") electrician
+        option.option(value="mechanic") mechanic
+      
       p.display
 
   
   //AJAX
   script(src='https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.1.min.js')
   script.
-      $('.submit').on('click',function(){
+      $('.search').on('click',function(){
       var service = $('.search').val()
       console.log(service);
       $.get('/submit',{service:service} , function(data){

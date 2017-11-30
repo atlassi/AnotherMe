@@ -106,7 +106,17 @@ app.post('/login',function(req,res){
 
 //<--------------Search GET------------->
 app.get('/search',function(req,res){
-	res.render('search')
+    Role.findAll()
+    .then(allroles=>{
+        console.log(`all roles--------------<${allroles}`)
+       
+        res.render('search',{roles:allroles})
+
+    })
+        
+
+    
+	
 })
 
 //<-------AJAX request search bar--------->
@@ -134,6 +144,8 @@ app.get('/submit',(req,res)=>{
     })
     
 })
+
+//<---test purpose--->
 app.get('/selected',(req,res)=>{
     let input = req.query.selected;
     console.log(`SELECTED NAME-------->${input}`)
