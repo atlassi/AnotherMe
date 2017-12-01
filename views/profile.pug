@@ -1,0 +1,101 @@
+doctype html
+html(lang='en')
+  head
+    meta(charset='UTF-8')
+    title Login Blog Application
+    script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js')
+    script(src='https://s.codepen.io/assets/libs/modernizr.js', type='text/javascript')
+    link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css')
+    link(rel='stylesheet', href='css/style.css')
+  body
+    form(action='/action_page.php', onsubmit='myFunction()')
+      | Enter name: 
+      input(type='text', name='fname')
+      input(type='submit', value='Submit')
+
+    a(href='/' + url) 
+    if usrProfile
+      h2 Welcome back #{usrProfile.firstname} !
+      .card
+        img(src='./images/profileimages/kevin.png', style="width:100%") 
+        h1(id="ProfileName") #{usrProfile.firstname}
+        p.title Your technician. Always there when needed
+
+      .card
+        div.profile(id="profileDetail")
+          p Your details
+          p E-mail: #{usrProfile.email}
+          p Firstname: #{usrProfile.firstname}
+          p Lastname: #{usrProfile.lastname}
+          input(type='submit', id='edit', value='Edit detail')
+          input(type='submit', id='upgrade', value='Upgrade account')
+      .card
+        div.profile(id="profileUpdate")
+          form(onSubmit=(onSubmit()) autocomplete='off')
+            input(type='text', name='inputFirstname',value=usrProfile.firstname)
+            input(type='text', name='inputLastname',value=usrProfile.lastname)
+            input(type='text', name='inputEmail', value=usrProfile.email)
+            input(type='submit', id='edit', value='Save' )
+            
+      
+      script.
+            //Show forms after click
+          $(document).ready(()=>{
+            $('#profileUpdate').hide();
+            $('#edit').click(()=>{
+            $('#profileUpdate').show(1000);
+            
+            //When onSubmite gets fired
+            const onSubmit = () => {
+            
+            $.ajax({
+                type: "POST",
+                url: 'updateUser'
+                data: data,
+                success: success,
+                dataType: dataType
+            });
+                          
+            
+            
+            
+              
+            }
+            
+            
+                
+            }
+          });
+        
+          
+          });
+          
+                  //- $form.append('<input type="button" value="button">');
+
+
+
+      //- //- Profile forms
+      //- .profile-form 
+      //-   a First name
+      //-   br
+      //-   input(type='text', name='firstname', value='Mickey')
+      //-   br
+      //-   a Last name:
+      //-   br
+      //-   input(type='text', name='lastname', value='Mouse')
+      //-   br
+      //-   a Email address:
+      //-   br
+      //-   input(type='text', name='lastname', value='Mouse')
+      //-   br
+      //- 
+      //-   input(type='submit', value='Submit')
+      //- 
+
+
+
+      a.forgot(href='/logout') Logout
+      form(action='/action_page.php')
+    else
+      h2 You need to login first.
+      a.forgot(href='/') Login

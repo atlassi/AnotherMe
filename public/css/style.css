@@ -1,0 +1,218 @@
+@import url(https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300,700|Open+Sans:400,300,600);
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'HelveticaNeue-UltraLight', 'Helvetica Neue UltraLight', 'Helvetica Neue', Arial, Helvetica, sans-serif;
+  background: url(https://i.ytimg.com/vi/ov58o2xJqu0/maxresdefault.jpg) no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+
+input[type='text'] {
+  font-size: 13px;
+  width: 148px;
+  height:20px;
+}
+
+h2 {
+  margin-left: 20px;
+}
+
+.log-form {
+  width: 40%;
+  height: 75%;
+  min-width: 320px;
+  max-width: 475px;
+  background: #fff;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  -moz-transform: translate(-50%, -50%);
+  -o-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.25);
+}
+
+@media (max-width: 40em) {
+  .log-form {
+    width: 95%;
+    position: relative;
+    margin: 2.5% auto 0 auto;
+    left: 0%;
+    -webkit-transform: translate(0%, 0%);
+    -moz-transform: translate(0%, 0%);
+    -o-transform: translate(0%, 0%);
+    -ms-transform: translate(0%, 0%);
+    transform: translate(0%, 0%);
+  }
+}
+
+.log-form form {
+  display: block;
+  width: 100%;
+  padding: 3em;
+}
+
+.log-form h2 {
+  color: white;
+  font-family: 'HelveticaNeue-UltraLight', 'Helvetica Neue UltraLight', 'Helvetica Neue', Arial, Helvetica, sans-serif;
+  font-size: 1.35em;
+  display: block;
+  background: #2a2a2a;
+  width: 100%;
+  text-transform: uppercase;
+  padding: .75em 1em .75em 1.5em;
+  box-shadow: inset 0px 1px 1px rgba(255, 255, 255, 0.05);
+  border: 1px solid #1d1d1d;
+  margin: 0;
+  font-weight: 200;
+}
+
+.log-form input {
+  display: block;
+  margin: auto auto;
+  width: 100%;
+  margin-bottom: 2em;
+  padding: .5em 0;
+  border: none;
+  border-bottom: 1px solid #eaeaea;
+  padding-bottom: 1.25em;
+  color: #757575;
+}
+
+.log-form input:focus {
+  outline: none;
+}
+
+.log-form .btn {
+  display: inline-block;
+  background: black;
+  padding: .5em 2em;
+  color: white;
+  margin-right: .5em;
+  box-shadow: inset 0px 1px 0px rgba(255, 255, 255, 0.2);
+}
+
+.log-form .btn:hover {
+  background: black;
+  color: white;
+}
+
+.log-form .btn:active {
+  box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.1);
+}
+
+.log-form .btn:focus {
+  outline: none;
+}
+
+.log-form .forgot2 {
+  color: black;
+  line-height: .5em;
+  position: relative;
+  top: 2.5em;
+  text-decoration: none;
+  font-size: .75em;
+  margin: 0;
+  padding: 0;
+  float: right;
+}
+
+.log-form .forgot:hover {
+  color: black;
+  font-weight: bold;
+}
+
+.log-form .forgot2:hover {
+  color: black;
+  font-weight: bold;
+}
+
+.log-form .forgot {
+  color: black;
+  ;
+  line-height: .5em;
+  position: relative;
+  top: 2.5em;
+  text-decoration: none;
+  font-size: .75em;
+  margin-left: 0;
+  padding: 0;
+  float: right;
+}
+
+/*Profilepage*/
+
+.card {
+  box-shadow: 0 4px 90px 0 rgba(0, 0, 0, 0.2);
+  max-width: 150px;
+  margin: 10px;
+  text-align: center;
+  background-color: black;
+  color: white;
+  border: white;
+  border-style: solid;
+  border-width: 2px;
+  margin-left: 20px;
+}
+
+#ProfileName {
+  font-family: 'HelveticaNeue-UltraLight', 'Helvetica Neue UltraLight', 'Helvetica Neue', Arial, Helvetica, sans-serif;
+  font-style: normal;
+  font-size: 18px;
+}
+
+.profile-form {
+  width: 24%;
+  margin-left: 10px;
+  padding-left: 10px;
+  margin-right: 10px;
+  color: white;
+  background-color: black;
+  border-width: 2px;
+}
+
+.profile-form a {
+  color: white;
+}
+
+.profile-form {
+  margin: 10px 0px 0px 0px;
+  padding: 20px;
+  left: 10px;
+}
+
+.title {
+  color: white;
+  font-size: 12px;
+  padding: 10px;
+}
+
+button {
+  border: none;
+  outline: 0;
+  display: inline-block;
+  padding: 8px;
+  color: white;
+  background-color: #000;
+  text-align: center;
+  cursor: pointer;
+  width: 100%;
+  font-size: 18px;
+}
+
+a {
+  text-decoration: none;
+  font-size: 22px;
+  color: black;
+}
+
+button:hover, a:hover {
+  opacity: 0.7;
+}
