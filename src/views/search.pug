@@ -7,16 +7,15 @@ head
   link(rel="stylesheet", type="text/css", href="css/style.css")
   script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js')
   script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js')
+  link(rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css")
   meta(http-equiv="content-type" content="text/html; charset=UTF-8")  
-  //- script(src="http://maps.google.com/maps/api/js?sensor=false" 
-  //-          type="text/javascript") 
 body
-  nav.navbar.navbar-default
+  nav.navbar.navbar-default.nav
     .container
       .navbar-header
-        a.navbar-brand(href='#') Another me
+        a.navbar-brand#logo(href='#') Another me
       ul.nav.navbar-nav
-        li.active
+        li
           a(href='/') Home
         li
           a(href='#') Contact us
@@ -24,6 +23,8 @@ body
           a(href='#') About us
         li
           a(href='#') Profile
+        li.active
+          a(href='#') Search
       ul.nav.navbar-nav.navbar-right
         li
           a(href='#')
@@ -52,6 +53,8 @@ body
         option.option(value="programmer") programmer
         option.option(value="electrician") electrician
         option.option(value="mechanic") mechanic 
+    //- div.col-lg-4
+    //-   p.display
       
   .container 
     .rows
@@ -63,106 +66,121 @@ body
       div.col-lg-4
       div.col-lg-4(id="map", onload='locate()' style="width: 400px; height: 400px;")
 
-  
+  .footer
+    .container
+      .rows
+        div.col-lg-4
+          p.copyrights copyrights @ 2017 All rights reserved
+        div.col-lg-4
+        div.col-lg-4
+          a.mediaIcon(href="www.facebook.com" class="fa fa-facebook")
+          a.mediaIcon(href="www.twitter.com" class="fa fa-twitter")
+          a.mediaIcon(href="www.google.com" class="fa fa-google")
+
   //AJAX
   script(src='https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.1.min.js')
   script.
        
-      $('.search').on('click',function(){
+    $('.search').on('click',function(){
       var service = $('.search').val()
       console.log(service);
       $.get('/submit',{service:service} , function(data){
         var users = data.output;
-        var allUsers = ""
+        var allUsers = "";
+        var allLocations = [];
+        var allTitles = [];
+        console.log('data.output------->'+JSON.stringify(users));
+        console.log('data.output length------->'+JSON.stringify(users.length));
 
         for(var i=0; i<users.length; i++){
-        //- allUsers = allUsers+users[i].users.name+" ,   "+ "    "+"  "+ users[i].users.city+'<br>'
-        allUsers = allUsers +`<p><li><a> ${users[i].users.name}</a>     near ${users[i].users.city}</li> <p> <br>`
+        console.log('user: ' + i + ': ' + users[i].users.name);
+        allUsers = allUsers +`<p><li><a>  ${users[i].users.name}</a>  near ${users[i].users.city}</li> <p> <br>`
        
-        
-        var address = `${users[i].users.city}`;
+         allLocations.push(users[i].users.city) ;
+
+         console.log(`allLocations----->${allLocations}`);
         var title = `${users[i].users.name}`;
-        console.log(address);
-        console.log('title' + title);
+        allTitles.push(users[i].users.title);      
+        console.log('title: ' + title);
+        }//for loop
 
-        var map = new google.maps.Map(document.getElementById('map'), { 
-       mapTypeId: google.maps.MapTypeId.TERRAIN,
-       zoom: 8
-         });
+        var geocoder = new google.maps.Geocoder();
 
-          var geocoder = new google.maps.Geocoder();
+        var map = new google.maps.Map(document.getElementById('map'), {
+           zoom: 8,
+           center: new google.maps.LatLng(0, 0),
+           mapTypeId: google.maps.MapTypeId.ROADMAP
+        });
 
-        geocoder.geocode({ 
-          'address': address
-        }, 
-        function(results, status) {
+        for(j=0; j<allLocations.length; j++){
+          var addressArray = allLocations[j];
+          var titleArray = allTitles[j];
+
+          geocoder.geocode({ 
+          'address': allLocations[j]
+          }, 
+          function(results, status) {
              if(status == google.maps.GeocoderStatus.OK && navigator.geolocation) {
       
-                  navigator.geolocation.getCurrentPosition(function(position) {
+                  navigator.geolocation.getCurrentPosition(function(position) { 
                     var pos = {
                       lat: position.coords.latitude,
                       lng: position.coords.longitude
                     };
 
-                    console.log('Current longitude--------------->' + pos.lng)
-                    console.log('Current latitude------->' + pos.lat)
+                  var myLatLng = new google.maps.LatLng(pos.lat, pos.lng);
 
-                      var myLatLng = new google.maps.LatLng(pos.lat, pos.lng);
+                      //- var map = new google.maps.Map(document.getElementById('map'), {
+                      //-   zoom: 8,
+                      //-   center: myLatLng,
+                      //-   mapTypeId: google.maps.MapTypeId.ROADMAP
+                      //- });
 
-                      var mapOptions = {
-                          zoom: 8,
-                          center: myLatLng,
-                          mapTypeId: google.maps.MapTypeId.ROADMAP
-                        }
-
-                      var map = new google.maps.Map(document.getElementById('map'),mapOptions);
-
-                      var im = 'http://www.robotwoods.com/dev/misc/bluecircle.png';
+                  var im = 'http://www.robotwoods.com/dev/misc/bluecircle.png';
 
                     var userMarker = new google.maps.Marker({
                         position: myLatLng,
                         map: map,
                         icon: im
                     });
-
-                      new google.maps.Marker({
+                    console.log('location: ' + results[0].geometry.location);
+                      var marker = new google.maps.Marker({
                         map: map,
                         position: results[0].geometry.location,
-                        title: title,
+                        title: titleArray,
                         animation: google.maps.Animation.DROP,
-                        address: address,
-                        optimized: false
-                   });
-                     map.setCenter(results[0].geometry.location);
+                        address: addressArray
+                        //- optimized: false
+                      });
+                      map.setCenter(results[0].geometry.location);
 
-                  })// navigator
+              }); //geocode
+           } //for loop for locations      
+          //for loop
               
-              }// if statement
-
-            }) //geocode
-                 
-        }  //for loop
-              
-          $('.display').html(`<li>${allUsers}</li>`)
 
        }) // AJAX (GET) request to server
-      })// click event
+      }
+      $('.display').html(`<li>${allUsers}</li>`)
+    });
+    
 
 
 
 
-        //- $('a').click(function(){
-        //-  var selected =  $(this).text()
+        $('a').click(function(){
+         var selected =  $(this).text()
 
 
-        //-  $.get('/selected',{selected: selected},function(data){
-        //-  var message = data.message;
-        //-  console.log(message)
+         $.get('/selected',{selected: selected},function(data){
+         var message = data.message;
+         console.log(message)
 
-        //-  })
+         })
 
-        //- console.log("it worked")
-        //- })
+        console.log("it worked")
+        })
+        });//click event
   script(src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCUBwmEFhSp5rFul8nEfs2qHWHXs5M4kIU&callback=initMap"
        async defer)
 

@@ -113,10 +113,7 @@ app.get('/search',function(req,res){
         res.render('search',{roles:allroles})
 
     })
-        
 
-    
-	
 })
 
 //<-------AJAX request search bar--------->
