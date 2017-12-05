@@ -22,7 +22,7 @@ body
         li
           a(href='#') About us
         li
-          a(href='#') Profile
+          a(href='/profile') Profile
         li.active
           a(href='#') Search
       ul.nav.navbar-nav.navbar-right
@@ -172,14 +172,15 @@ body
          var selected =  $(this).text()
 
 
-         $.get('/selected',{selected: selected},function(data){
-         var message = data.message;
-         console.log(message)
+          $.get('/selected',{selected: selected},function(data){
+          var message = data.message;
+          console.log(message)
 
-         })
+          })
 
         console.log("it worked")
         })
+
         });//click event
   script(src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCUBwmEFhSp5rFul8nEfs2qHWHXs5M4kIU&callback=initMap"
        async defer)

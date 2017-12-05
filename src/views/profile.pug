@@ -1,0 +1,113 @@
+doctype html
+head
+  title Another Me
+  meta(charset='utf-8')
+  meta(name='viewport', content='width=device-width, initial-scale=1')
+  link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css')
+  link(rel="stylesheet", type="text/css", href="css/style.css")
+  script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js')
+  script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js')
+  link(rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css")
+  meta(http-equiv="content-type" content="text/html; charset=UTF-8")  
+body
+  nav.navbar.navbar-default.nav
+    .container
+      .navbar-header
+        a.navbar-brand#logo(href='#') Another me
+      ul.nav.navbar-nav
+        li
+          a(href='/') Home
+        li
+          a(href='#') Contact us
+        li
+          a(href='#') About us
+        li.active
+          a(href='#') Profile
+        li
+          a(href='#') Search
+      ul.nav.navbar-nav.navbar-right
+        li
+          a(href='#')
+            span.glyphicon.glyphicon-log-out.login-link
+            |  Logout
+
+  .container
+    .rows
+      .col-lg-1.space
+      .col-lg-2.profilepic
+        img(src='images/profile.jpeg' width='60%')
+        .profileDetails
+          p Mechanic
+          p Hello!I'm a mechanic
+          button.btn.btn-default.edit(type='') Edit 
+
+      .col-lg-4.details
+        .details1
+          p
+            img(src="images/checkmark.png" width='5%')
+            | Car repair € 30,00 
+          p
+            img(src="images/checkmark.png" width='5%')    
+            | Lay tiles € 25,60 
+          p 
+            img(src="images/checkmark.png" width='5%')
+            | Pick-up something € 25,60 p/h
+
+          img(src="images/checkmark.png" width='5%') 
+          select.services.form-control.select(name = 'service')
+            option.option(value="") services
+            option.option(value="programmer") programmer
+            option.option(value="electrician") electrician
+            option.option(value="mechanic") mechanic
+        .details2
+          p
+            img(src="images/pointer.png" width='10%') 
+            | Amsterdam (The Netherlands)
+            img(src="images/checkmark.png" width='5%')
+          p 
+            img(src="images/wtsapp.jpg" width='10%') 
+            | +31 12345678
+            img(src="images/checkmark.png" width='5%')
+      //- .col-lg-1.space
+      .col-lg-4.detailsform
+         form.input-field1(action='/', method='post', autocomplete='off')
+            input.input.form-control(type='text', name='name', placeholder="Enter Your Name",autocomplete='off')
+            br
+            input.input.form-control(type='text', placeholder='example@email.com', name='email')
+            br
+            input.input.form-control(type='text', placeholder='Enter city', name='city')
+            br
+            input.input.form-control(type='text', placeholder='Enter password', name='password')
+            br
+            input.input.form-control(type='text', placeholder='', name='email')
+            br
+            input.input.form-control(type='text', placeholder='', name='city')
+            br
+            input.input.form-control.input1(type='text', placeholder='', name='password')
+            button.btn.btn-default.edit(type='submit') Save
+      .col-lg-1.space
+
+  .container.about
+    .rows
+      .col-lg-2
+      .col-lg-1.space
+      .col-lg-8.abouttextArea
+        p About Me
+        input.aboutMe.form-control(type='textarea', placeholder='write something about you!')
+        button.btn.btn-default.edit(type='submit') Save
+
+  .footer
+    .container
+      .rows
+        div.col-lg-4
+          p.copyrights copyrights @ 2017 All rights reserved
+        div.col-lg-4
+        div.col-lg-4
+          a.mediaIcon(href="www.facebook.com" class="fa fa-facebook")
+          a.mediaIcon(href="www.twitter.com" class="fa fa-twitter")
+          a.mediaIcon(href="www.google.com" class="fa fa-google")
+
+
+
+
+

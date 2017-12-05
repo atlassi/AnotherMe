@@ -74,7 +74,7 @@ app.get('/login',(req,res)=>{
 })
 
 
-//<-----SIGNUP(post)------>
+//<-------------SIGNUP(post)---------->
 app.post('/signup',function(req,res){
 
 let inputname = req.body.name;
@@ -98,6 +98,13 @@ let inputname = req.body.name;
     }) 
 
 })
+
+//<----------Profile------------->
+app.get('/profile',function(req,res){
+    res.render('profile.pug')
+})
+
+
 
 //<---------LOGIN(post)--------->
 app.post('/login',function(req,res){

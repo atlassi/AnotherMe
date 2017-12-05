@@ -6,7 +6,7 @@
 
 body {
   font-family: 'HelveticaNeue-UltraLight', 'Helvetica Neue UltraLight', 'Helvetica Neue', Arial, Helvetica, sans-serif;
-  background: url(https://i.ytimg.com/vi/ov58o2xJqu0/maxresdefault.jpg) no-repeat center center fixed;
+  background: rl(https://i.ytimg.com/vi/ov58o2xJqu0/maxresdefault.jpg) no-repeat center center fixed;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
@@ -63,6 +63,7 @@ h3{
 .footer{
 	background-color: black;
 	color: white;
+	position: relative;
 }
 .copyrights{
 padding: 14px 2px 2px 2px;
@@ -118,4 +119,80 @@ a{
 .fa-google {
   background: #dd4b39;
   color: white;
+}
+
+/*profile page*/
+.details{
+background-color: lightgray;
+color: black;
+margin-right: 20px;
+padding-top: 20px;
+}
+.details1{
+	    margin-bottom: 70px;
+
+}
+.details2{
+	margin-bottom: 57px;
+}
+.detailsform{
+	background-color: lightgray;
+color: black;
+padding-top: 20px;
+
+}
+.profilepic{
+/*	background-color: lightgra*/y;
+	color: black;
+	margin-right: 20px;
+}
+.about{
+	    margin-right: 23px;
+    margin-bottom: 45px;
+}
+.abouttextArea{
+
+	background-color: lightgray;
+	color: black;
+	margin-top: 20px;
+
+}
+.aboutMe{
+	
+    padding: 33px 3px 38px 27px;
+    display: inline;
+    width: 80%;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    margin-right: 20px;
+}
+.edit{
+	background-color: black;
+	color: white;
+}
+.edit:hover{
+	background-color: white;
+	color: black;
+}
+.input{
+	width: 61%;
+    padding: 0px 0px 0px 35px;
+    margin: -9px 40px 0px 0px;
+}
+.input1{
+	display: inline;
+	margin-bottom: 20px;
+}
+.input-field1{
+	margin-bottom: 20px;
+    margin-top: 10px;
+}
+.services{
+	width: 80%;
+	display: inline-block;
+
+}
+.profileDetails p{
+	color: black;
+
 }
