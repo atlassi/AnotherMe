@@ -34,6 +34,21 @@ app.use(session({
     resave: false
 }))
 
+//<--------Multer----------->
+const multer  = require('multer')
+const myStorage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, '../public/images/user-images')
+    },
+    filename: function (req, file, cb) {
+        cb(null, file.fieldname + '-' + Date.now())
+    }
+})
+const upload = multer({ storage: myStorage });
+
+
+
+
 //<----------Defining users table------------>
 const User = sequelize.define('users', {
   firstname: Sequelize.STRING,
@@ -48,7 +63,8 @@ const User = sequelize.define('users', {
   aboutme: Sequelize.TEXT,
   motto:Sequelize.TEXT,
 	availability: Sequelize.BOOLEAN,
-	serviceProvider: Sequelize.BOOLEAN
+	serviceProvider: Sequelize.BOOLEAN,
+  profilePicture: Sequelize.STRING
 }, {
     timestamps: false
    })
@@ -91,7 +107,8 @@ app.get('/signup', (req, res) => {
 })
 
 //Create new user using data from signup page
-app.post('/createuser', (req, res) => {
+app.post('/createuser', upload.single('profileImage'), (req, res,next) => {
+  let path = req.file.path.replace('public', '')
   if (req.body.password != req.body.password) {
     res.redirect('/?message=' + encodeURIComponent('Passwords need match'));
     return;
@@ -107,9 +124,11 @@ app.post('/createuser', (req, res) => {
         firstname: req.body.inputFirstname,
         lastname: req.body.inputLastname,
         email: req.body.inputEmail,
-        password: req.body.password
+        password: req.body.password,
+        profilePicture: path
       })
-      .catch((error) => {
+      .catch((error) =>
+       {
         console.log(error);
       })
     res.redirect('/');
@@ -198,7 +217,8 @@ app.get('/profile', (req, res) => {
         aboutme: aboutme,
         motto:motto,
         availability:availability,
-        serviceProvider:serviceProvider
+        serviceProvider:serviceProvider,
+
 
       })
     })
@@ -375,7 +395,7 @@ app.get('/logout', (req, res) => {
 
 
 sequelize.sync({
-  force:  false
+  force: false
   }
 )
 //<--------SERVER PORT----------->

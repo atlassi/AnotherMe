@@ -36,9 +36,9 @@ if usrProfile
     .rows
       .col-lg-1.space
       .col-lg-2.profilepic
-        img(src='images/profile.jpeg' width='60%')
+        img(src=`${usrProfile.profilePicture}` width='60%')
         .profileDetails
-          p Welcome back #{usrProfile.firstname} !
+          p Hi #{usrProfile.firstname} !
           button.btn.btn-default.edit(type='') Edit 
     
         
