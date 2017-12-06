@@ -67,7 +67,7 @@ Role.belongsTo(User);
 //------------------------------------------------------------------------------
 //Routing
 //------------------------------------------------------------------------------
-//Home route
+// Home route
 app.get('/', (req, res) => {
   res.render('index');
 
@@ -115,10 +115,11 @@ app.post('/createuser', (req, res) => {
     res.redirect('/');
   }
 })
-//<----------Profile------------->
-app.get('/profile', (req, res) => {
 
-  if (req.query.updateProfile){
+//<----------Profile------------->
+app.get('/syncUpdateRequest', (req, res) => {
+
+  if (req.query.syncUpdateRequest){
     User.findOne({
       where: {
         id:req.session.user.id
@@ -129,17 +130,17 @@ app.get('/profile', (req, res) => {
         firstname: user.firstname,
         lastname: user.lastname,
         email: user.email,
-        street: street,
-        housenumber: housenumber,
-        phone:phone,
-        postalcode:postalcode,
-        city:city        
+        street: user.street,
+        housenumber: user.housenumber,
+        phone:user.phone,
+        postalcode:user.postalcode,
+        city:user.city,
+        method: console.log(user.email+'<< -- NIEUWE EMAIL NA POST!')
       })
     })
+
   }
-  else res.render('profile', {
-    usrProfile: req.session.user
-  })
+  else return;
 })
 
 
@@ -183,34 +184,20 @@ app.post('/login', (req, res) => {
 
 //Profile route
 app.get('/profile', (req, res) => {
-  if (req.query.updateProfile){
+  if (req.session.user){
     User.findOne({
       where: {
         id:req.session.user.id
       }
     })
     .then((user)=>{
-      res.send({
-        firstname: user.firstname,
-        lastname: user.lastname,
-        email: user.email,
-        postalcode: postalcode,
-        housenumber: housenumber,
-        street: street,
-        city: city,
-        email: email,
-        phone: phone,
-        aboutme: aboutme,
-        motto:motto,
-        availability:availability,
-        serviceProvider:serviceProvider
-
+      res.render('profile', {
+        usrProfile: user
       })
     })
-  }
-  else res.render('profile', {
-    usrProfile: req.session.user
-  })
+  }else{
+    res.render('profile');
+   }
 })
 // Update route: Updates the profile details
 app.post('/updateUser', (req, res) => {
@@ -235,6 +222,9 @@ app.post('/updateUser', (req, res) => {
 app.post('/upgradeUser', (req, res) => {
   if (req.session.user.id){
   User.update({
+    firstname: req.body.firstname,
+    lastname: req.body.lastname,
+    email: req.body.email,
     postalcode: req.body.postalcode,
     housenumber: req.body.housenumber,
     street: req.body.street,
@@ -248,14 +238,15 @@ app.post('/upgradeUser', (req, res) => {
     where: {
       id: req.session.user.id
     }
-  })
-    .catch(function(error) {
-      console.error(error)
-    })
+  }).then(()=>{
     console.log(req.session.user + ' Account upgraded!');
-    res.send();
+    res.redirect('/profile');
+  })
+  .catch(function(error) {
+    console.error(error)
+  })
+
   }
-  else return;
 
 })
 
@@ -274,6 +265,11 @@ app.post('/addService', (req, res) => {
     price: "req.body.price",
   });
 }
+})
+
+app.get('/upgrade', (req,res)=>{
+
+  res.render('profile-upgraded')
 })
 
 
