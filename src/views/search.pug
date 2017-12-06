@@ -1,0 +1,198 @@
+doctype html
+head
+  title Another Me
+  meta(charset='utf-8')
+  meta(name='viewport', content='width=device-width, initial-scale=1')
+  link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css')
+  link(rel="stylesheet", type="text/css", href="css/style.css")
+  script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js')
+  script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js')
+  link(rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css")
+  meta(http-equiv="content-type" content="text/html; charset=UTF-8")  
+body
+  nav.navbar.navbar-default.nav
+    .container
+      .navbar-header
+        a.navbar-brand#logo(href='#') Another me
+      ul.nav.navbar-nav
+        li
+          a(href='/') Home
+        li
+          a(href='#') Contact us
+        li
+          a(href='#') About us
+        li
+          a(href='/profile') Profile
+        li.active
+          a(href='#') Search
+      ul.nav.navbar-nav.navbar-right
+        li
+          a(href='#')
+            span.glyphicon.glyphicon-log-out.login-link
+            |  Logout
+  //- form.input-roles(action='/addroles', method='post',autocomplete= 'off')
+  //-   input(type='text', name='role', placeholder='add service')
+  //-   br
+  //-   br
+  //-   input(type='text', name='price', placeholder='add price/hr')
+  //-   br
+  //-   br
+  //-   input(type='text', name='id',placeholder='user id')
+  //-   br
+  //-   br
+  //-   input(type='submit', value= 'Add services')
+  //- //add roles
+  div.rows
+    div.col-lg-4
+    div.col-lg-4
+      h3 Search by service
+      select.search.form-control.select(name = 'service')
+        //- each role in roles
+        //-   option.option(value= role.id) #{role.service}
+        option(value="null")
+        option(value="Housekeeper") Housekeeper
+        option(value="Electrician") Electrician
+        option(value="Gardener") Gardener
+        option(value="Courier") Courier
+        option(value="Computer Technician") Computer Technician
+        option(value="Handyman") Handyman
+        option(value="Carpenter") Carpenter
+        option(value="Tiler") Tiler
+        option(value="Painter") Painter
+        option(value="Accountant") Accountant
+        option(value="Window Washer") Window Washer
+    //- div.col-lg-4
+    //-   p.display
+      
+  .container 
+    .rows
+      div.col-lg-4
+      div.col-lg-4
+        p.display
+  .container
+    .rows
+      div.col-lg-4
+      div.col-lg-4(id="map", onload='locate()' style="width: 100%; height: 400px;")
+
+  .footer
+    .container
+      .rows
+        div.col-lg-4
+          p.copyrights copyrights @ 2017 All rights reserved
+        div.col-lg-4
+        div.col-lg-4
+          a.mediaIcon(href="www.facebook.com" class="fa fa-facebook")
+          a.mediaIcon(href="www.twitter.com" class="fa fa-twitter")
+          a.mediaIcon(href="www.google.com" class="fa fa-google")
+
+  //AJAX
+  script(src='https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.1.min.js')
+  script.
+       
+    $('.search').on('click',function(){
+      var service = $('.search').val()
+      console.log(service);
+      $.get('/submit',{service:service} , function(data){
+        var users = data.output;
+        var allUsers = "";
+        var allLocations = [];
+        var allTitles = [];
+        console.log('data.output------->'+JSON.stringify(users));
+        console.log('data.output length------->'+JSON.stringify(users.length));
+
+        for(var i=0; i<users.length; i++){
+        console.log('user: ' + i + ': ' + users[i].users.name);
+        allUsers = allUsers +`<p><li><a>  ${users[i].users.name}</a>  near ${users[i].users.city}</li> <p> <br>`
+       
+         allLocations.push(users[i].users.city) ;
+
+         console.log(`allLocations----->${allLocations}`);
+        var title = `${users[i].users.name}`;
+        allTitles.push(users[i].users.title);      
+        console.log('title: ' + title);
+        }//for loop
+
+        var geocoder = new google.maps.Geocoder();
+
+        var map = new google.maps.Map(document.getElementById('map'), {
+           zoom: 8,
+           center: new google.maps.LatLng(0, 0),
+           mapTypeId: google.maps.MapTypeId.ROADMAP
+        });
+
+        for(j=0; j<allLocations.length; j++){
+          var addressArray = allLocations[j];
+          var titleArray = allTitles[j];
+
+          geocoder.geocode({ 
+          'address': allLocations[j]
+          }, 
+          function(results, status) {
+             if(status == google.maps.GeocoderStatus.OK && navigator.geolocation) {
+      
+                  navigator.geolocation.getCurrentPosition(function(position) { 
+                    var pos = {
+                      lat: position.coords.latitude,
+                      lng: position.coords.longitude
+                    };
+
+                  var myLatLng = new google.maps.LatLng(pos.lat, pos.lng);
+
+                      //- var map = new google.maps.Map(document.getElementById('map'), {
+                      //-   zoom: 8,
+                      //-   center: myLatLng,
+                      //-   mapTypeId: google.maps.MapTypeId.ROADMAP
+                      //- });
+
+                  var im = 'http://www.robotwoods.com/dev/misc/bluecircle.png';
+
+                    var userMarker = new google.maps.Marker({
+                        position: myLatLng,
+                        map: map,
+                        icon: im
+                    });
+                    console.log('location: ' + results[0].geometry.location);
+                      var marker = new google.maps.Marker({
+                        map: map,
+                        position: results[0].geometry.location,
+                        title: titleArray,
+                        animation: google.maps.Animation.DROP,
+                        address: addressArray
+                        //- optimized: false
+                      });
+                      map.setCenter(results[0].geometry.location);
+
+              }); //geocode
+           } //for loop for locations      
+          //for loop
+              
+
+       }) // AJAX (GET) request to server
+      }
+      $('.display').html(`<li>${allUsers}</li>`)
+    });
+    
+
+
+
+
+        $('a').click(function(){
+         var selected =  $(this).text()
+
+
+          $.get('/selected',{selected: selected},function(data){
+          var message = data.message;
+          console.log(message)
+
+          })
+
+        console.log("it worked")
+        })
+
+        });//click event
+  script(src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCUBwmEFhSp5rFul8nEfs2qHWHXs5M4kIU&callback=initMap"
+       async defer)
+
+
+
+   
