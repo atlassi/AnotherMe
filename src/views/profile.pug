@@ -53,12 +53,18 @@ if usrProfile
         .profileDetails
           p Welcome back #{usrProfile.firstname} !
           button.btn.btn-default.edit(type='') Edit 
-
+    
+        
+      
       .col-lg-4.details
-        .details1
+        .service
+          img(src='images/serviceProvider.jpg', width= '25%')
+          span(style="font-size:20px;") Start Earning money now!
+          button.btn.btn-default.seller(type='submit' style="background-color: skyblue; margin: -64px 2px 2px 180px;") SignUp as seller
+        .details1(style="display:none;")
           p
             img(src="images/checkmark.png" width='4%')
-            |    Car repair € 30,00    
+            |    Car repair € 30,00   
           p
             img(src="images/checkmark.png" width='4%')    
             |    Lay tiles € 25,60    
@@ -68,7 +74,7 @@ if usrProfile
 
 
           select.services.form-control.select(name = 'service')
-            option(value="null")
+            option(value="select service") Select Service
             option(value="Housekeeper") Housekeeper
             option(value="Electrician") Electrician
             option(value="Gardener") Gardener
