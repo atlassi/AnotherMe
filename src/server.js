@@ -128,7 +128,12 @@ app.get('/profile', (req, res) => {
       res.send({
         firstname: user.firstname,
         lastname: user.lastname,
-        email: user.email
+        email: user.email,
+        street: street,
+        housenumber: housenumber,
+        phone:phone,
+        postalcode:postalcode,
+        city:city        
       })
     })
   }

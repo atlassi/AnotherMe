@@ -10,7 +10,20 @@ head
   link(rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css")
   meta(http-equiv="content-type" content="text/html; charset=UTF-8")  
 body
+  
+
+    
 if usrProfile
+  script.
+    const updateProfile = ()=> {
+      $.get("/profile", { updateProfile: true}, function( data ) {
+      $('#firstname').text(`Firstname: ${data.firstname}`);
+      $('#lastname').text(`Lastname: ${data.lastname}`);
+      $('#email').text(`Email: ${data.email}`);
+      $('#firstname, #lastname, #email').show();
+      });
+      }
+      updateProfile();
   nav.navbar.navbar-default.nav
     .container
       .navbar-header
@@ -82,19 +95,19 @@ if usrProfile
          form.input-field1(action='/', method='post', autocomplete='off')
             input.input.form-control(type='text', value=usrProfile.firstname id='firstname', placeholder="Enter Your Name",autocomplete='off')
             br
-            input.input.form-control(type='text', value=usrProfile.lastname, id='lastname')
+            input.input.form-control(type='text', value=usrProfile.lastname, id='lastname', placeholder="Enter Your Name",autocomplete='off')
             br
-            input.input.form-control(type='text', value=usrProfile.email, id='email')
+            input.input.form-control(type='text', value=usrProfile.email, id='email', placeholder="Enter Your E-mail",autocomplete='off')
             br
-            input.input.form-control(type='text', value=usrProfile.street, id='street')
+            input.input.form-control(type='text', value=usrProfile.street, id='street', placeholder="Enter Your Streetname" ,autocomplete='off')
             br
-            input.input.form-control(type='text', value=usrProfile.housenumber, id='housenumber')
+            input.input.form-control(type='text', value=usrProfile.housenumber, id='housenumber', placeholder="Enter Your Housenumber",autocomplete='off')
             br
-            input.input.form-control(type='text', value=usrProfile.phone, id='phone')
+            input.input.form-control(type='text', value=usrProfile.phone, id='phone', placeholder="Enter Your Phone",autocomplete='off')
             br
-            input.input.form-control(type='text', value=usrProfile.postalcode, id='postalcode')
+            input.input.form-control(type='text', value=usrProfile.postalcode, id='postalcode', placeholder="Enter Your Postalcode",autocomplete='off')
             br
-            input.input.form-control(type='text', placeholder='', name='city')
+            input.input.form-control(type='text', value=usrProfile.city,, id='city', placeholder="Enter Your City" ,autocomplete='off')
             br
             input.input.form-control(type='text', placeholder='Enter old password', id='oldPassword')
             br
