@@ -100,6 +100,7 @@ app.get('/home', (req,res)=>{
 	res.render("home.pug")
 })
 
+
 //Signup page
 app.get('/signup', (req, res) => {
   // console.log(req.session)
