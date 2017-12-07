@@ -137,10 +137,14 @@ padding-top: 20px;
 }
 .detailsform{
 	background-color: lightgray;
-color: black;
-padding-top: 20px;
-
+  color: black;
+  padding-top: 20px;
+  display: none;
 }
+
+
+
+
 .profilepic{
 /*	background-color: lightgra*/y;
 	color: black;
@@ -148,8 +152,10 @@ padding-top: 20px;
 }
 .about{
 	    margin-right: 23px;
-    margin-bottom: 45px;
+      margin-bottom: 45px;
+      display:none
 }
+
 .abouttextArea{
 
 	background-color: lightgray;
@@ -184,8 +190,8 @@ padding-top: 20px;
 	margin-bottom: 20px;
 }
 .input-field1{
-	margin-bottom: 20px;
-    margin-top: 10px;
+  margin-bottom: 20px;
+  margin-top: 10px;
 }
 .services{
 	width: 80%;
@@ -196,4 +202,3 @@ padding-top: 20px;
 	color: black;
 
 }
-
