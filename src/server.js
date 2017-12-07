@@ -53,6 +53,7 @@ const upload = multer({
 
 
 
+
 //<----------Defining users table------------>
 const User = sequelize.define('users', {
   firstname: Sequelize.STRING,
@@ -105,6 +106,7 @@ app.get('/home', (req, res) => {
   res.render("home.pug")
 })
 
+
 //Signup page
 app.get('/signup', (req, res) => {
   // console.log(req.session)
@@ -112,8 +114,8 @@ app.get('/signup', (req, res) => {
 })
 
 //Create new user using data from signup page
-app.post('/createuser', upload.single('profileImage'), (req, res, next) => {
-  // let path = req.file.path.replace('public', '')
+app.post('/createuser', upload.single('profileImage'), (req, res,next) => {
+  let path = req.file.path.replace('public', '')
   if (req.body.password != req.body.password) {
     res.redirect('/?message=' + encodeURIComponent('Passwords need match'));
     return;
@@ -129,10 +131,12 @@ app.post('/createuser', upload.single('profileImage'), (req, res, next) => {
         firstname: req.body.inputFirstname,
         lastname: req.body.inputLastname,
         email: req.body.inputEmail,
-        password: req.body.password
-        // profilePicture: path
+
+        password: req.body.password,
+        profilePicture: path
       })
-      .catch((error) => {
+      .catch((error) =>
+       {
         console.log(error);
       })
     res.redirect('/');
@@ -218,6 +222,7 @@ app.post('/login', (req, res) => {
 app.get('/profile', (req, res) => {
   if (req.session.user) {
     User.findOne({
+
         where: {
           id: req.session.user.id
         }
@@ -226,6 +231,7 @@ app.get('/profile', (req, res) => {
         res.render('profile',{
         usrProfile: user
         })
+
       })
   }
 })
@@ -415,6 +421,7 @@ app.get('/logout', (req, res) => {
 sequelize.sync({
   force: false
 })
+
 //<--------SERVER PORT----------->
 app.listen(3001, function() {
   console.log("app is listening at port 3000")
