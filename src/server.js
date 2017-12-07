@@ -37,20 +37,16 @@ app.use(session({
 }))
 
 //<--------Multer----------->
-const multer = require('multer')
+const multer  = require('multer')
 const myStorage = multer.diskStorage({
-  destination: function(req, file, cb) {
-    cb(null, '../public/images/user-images')
-  },
-  filename: function(req, file, cb) {
-    cb(null, file.fieldname + '-' + Date.now())
-  }
+    destination: function (req, file, cb) {
+        cb(null, '../public/images/user-images')
+    },
+    filename: function (req, file, cb) {
+        cb(null, file.fieldname + '-' + Date.now())
+    }
 })
-const upload = multer({
-  storage: myStorage
-});
-
-
+const upload = multer({ storage: myStorage });
 
 
 
@@ -106,7 +102,6 @@ app.get('/home', (req, res) => {
   res.render("home.pug")
 })
 
-
 //Signup page
 app.get('/signup', (req, res) => {
   // console.log(req.session)
@@ -131,7 +126,6 @@ app.post('/createuser', upload.single('profileImage'), (req, res,next) => {
         firstname: req.body.inputFirstname,
         lastname: req.body.inputLastname,
         email: req.body.inputEmail,
-
         password: req.body.password,
         profilePicture: path
       })
@@ -222,7 +216,6 @@ app.post('/login', (req, res) => {
 app.get('/profile', (req, res) => {
   if (req.session.user) {
     User.findOne({
-
         where: {
           id: req.session.user.id
         }
@@ -231,10 +224,11 @@ app.get('/profile', (req, res) => {
         res.render('profile',{
         usrProfile: user
         })
-
       })
   }
 })
+
+
 // Update route: Updates the profile details
 app.post('/updateUser', (req, res) => {
   User.update({
@@ -313,46 +307,46 @@ app.get('/upgrade', (req, res) => {
 
 
 //<--------------Search GET------------->
-// app.get('/search', function(req, res) {
-//   Role.findAll()
-//     .then(allroles => {
-//       console.log(`all roles--------------<${allroles}`)
-//
-//       res.render('search', {
-//         roles: allroles
-//       })
-//
-//     })
-//
-// })
+app.get('/search', function(req, res) {
+  Role.findAll()
+    .then(allroles => {
+      console.log(`all roles--------------<${allroles}`)
+
+      res.render('search', {
+        roles: allroles
+      })
+
+    })
+
+})
 
 //<-------AJAX request search bar--------->
-// app.get('/submit', (req, res) => {
-//   var service = req.query.service;
-//   console.log(`service input----------->${service}`)
-//   Role.findAll({
-//     where: {
-//       service: service
-//     },
-//     include: [{
-//       model: User
-//     }]
-//   }).then(users => {
-//     users = users.map(data => {
-//       return {
-//         users: data.user
-//       }
-//     })
-//     var output = users;
-//     console.log(`users with service---------->${JSON.stringify(users)}`)
-//     res.send({
-//       output: output
-//     })
-//   }).catch(err => {
-//     console.log(err)
-//   })
-//
-// })
+app.get('/submit', (req, res) => {
+  var service = req.query.service;
+  console.log(`service input----------->${service}`)
+  Role.findAll({
+    where: {
+      service: service
+    },
+    include: [{
+      model: User
+    }]
+  }).then(users => {
+    users = users.map(data => {
+      return {
+        users: data.user
+      }
+    })
+    var output = users;
+    console.log(`users with service---------->${JSON.stringify(users)}`)
+    res.send({
+      output: output
+    })
+  }).catch(err => {
+    console.log(err)
+  })
+
+})
 
 //<---test purpose--->
 // app.get('/selected', (req, res) => {
@@ -421,7 +415,6 @@ app.get('/logout', (req, res) => {
 sequelize.sync({
   force: false
 })
-
 //<--------SERVER PORT----------->
 app.listen(3001, function() {
   console.log("app is listening at port 3000")
