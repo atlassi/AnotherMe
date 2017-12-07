@@ -14,16 +14,6 @@ body
 
     
 if usrProfile
-  script.
-    const updateProfile = ()=> {
-      $.get("/profile", { updateProfile: true}, function( data ) {
-      $('#firstname').text(`Firstname: ${data.firstname}`);
-      $('#lastname').text(`Lastname: ${data.lastname}`);
-      $('#email').text(`Email: ${data.email}`);
-      $('#firstname, #lastname, #email').show();
-      });
-      }
-      updateProfile();
   nav.navbar.navbar-default.nav
     .container
       .navbar-header
@@ -49,19 +39,19 @@ if usrProfile
     .rows
       .col-lg-1.space
       .col-lg-2.profilepic
-        img(src='images/profile.jpeg' width='60%')
+        img(src=`${usrProfile.profilePicture}` width='60%')
         .profileDetails
-          p Welcome back #{usrProfile.firstname} !
+          p Hi #{usrProfile.firstname} !
           button.btn.btn-default.edit(type='') Edit 
     
         
-      
       .col-lg-4.details
-        .service
+        .service(style="display:none")
           img(src='images/serviceProvider.jpg', width= '25%')
           span(style="font-size:20px;") Start Earning money now!
-          button.btn.btn-default.seller(type='submit' style="background-color: skyblue; margin: -64px 2px 2px 180px;") SignUp as seller
-        .details1(style="display:none;")
+          button.btn.btn-default.seller(type='submit' , onclick='showDetailForms()', id='btnSignUpSeller', style="background-color: skyblue; margin: -64px 2px 2px 180px;") SignUp as seller
+        .details1(style="display:none")
+          
           p
             img(src="images/checkmark.png" width='4%')
             |    Car repair € 30,00   
@@ -72,8 +62,8 @@ if usrProfile
             img(src="images/checkmark.png" width='4%')
             |    Pick-up something € 25,60 p/h   
 
-
-          select.services.form-control.select(name = 'service')
+        p(id='addedServices')
+          select.services.form-control.select( id='service')
             option(value="select service") Select Service
             option(value="Housekeeper") Housekeeper
             option(value="Electrician") Electrician
@@ -87,7 +77,9 @@ if usrProfile
             option(value="Accountant") Accountant
             option(value="Window Washer") Window Washer
             input(type='number', class="currencyinput", id='price', placeholder='Hourrate')
-        .details2
+            br
+            button.btn.btn-default.edit(type='submit' onclick='addService()') Add service
+        .details2(style="display:none")
           p
             img(src="images/pointer.png" width='6%') 
             |      #{usrProfile.city} (The Netherlands)  
@@ -98,12 +90,12 @@ if usrProfile
 
       //- .col-lg-1.space
       .col-lg-4.detailsform
-         form.input-field1(action='/', method='post', autocomplete='off')
-            input.input.form-control(type='text', value=usrProfile.firstname id='firstname', placeholder="Enter Your Name",autocomplete='off')
+         form.input-field1( id='detailsform', autocomplete='off')
+            input.input.form-control(type='text', id='firstname', value=usrProfile.firstname, placeholder=`Enter New Firstname` ,autocomplete='off')
             br
-            input.input.form-control(type='text', value=usrProfile.lastname, id='lastname', placeholder="Enter Your Name",autocomplete='off')
+            input.input.form-control(type='text', id='lastname', value=usrProfile.lastname, placeholder=`Enter New Lastname`, autocomplete='off')
             br
-            input.input.form-control(type='text', value=usrProfile.email, id='email', placeholder="Enter Your E-mail",autocomplete='off')
+            input.input.form-control(type='text', id='email', value=value=usrProfile.email, placeholder=`Enter New E-mail` autocomplete='off')
             br
             input.input.form-control(type='text', value=usrProfile.street, id='street', placeholder="Enter Your Streetname" ,autocomplete='off')
             br
@@ -113,7 +105,7 @@ if usrProfile
             br
             input.input.form-control(type='text', value=usrProfile.postalcode, id='postalcode', placeholder="Enter Your Postalcode",autocomplete='off')
             br
-            input.input.form-control(type='text', value=usrProfile.city,, id='city', placeholder="Enter Your City" ,autocomplete='off')
+            input.input.form-control(type='text', value=usrProfile.city, id='city', placeholder="Enter Your City" ,autocomplete='off')
             br
             input.input.form-control(type='text', placeholder='Enter old password', id='oldPassword')
             br
@@ -121,7 +113,7 @@ if usrProfile
             br
             input.input.form-control(type='text', placeholder='Re-enter new password', id='newPassword2')
             br
-            button.btn.btn-default.edit(type='submit') Save
+            button.btn.btn-default.edit(type='submit' onclick='upgradeAccount()') Save
       .col-lg-1.space
 
   .container.about
@@ -130,7 +122,7 @@ if usrProfile
       .col-lg-1.space
       .col-lg-8.abouttextArea
         p About Me
-        input.aboutMe.form-control(type='textarea', placeholder='write something about you!')
+        input.aboutMe.form-control(type='textarea', id='aboutMeForm', placeholder='write something about you!')
         button.btn.btn-default.edit(type='submit') Save
 
 
@@ -144,5 +136,100 @@ if usrProfile
           a.mediaIcon(href="www.facebook.com" class="fa fa-facebook")
           a.mediaIcon(href="www.twitter.com" class="fa fa-twitter")
           a.mediaIcon(href="www.google.com" class="fa fa-google")
+
+  script.
+  
+    const syncUpdateRequest = ()=> {
+      $.get("/syncUpdateRequest", { syncUpdateRequest: true}, function( data ) {
+        if (data.user.serviceProvider === null){
+          $('.service').css({'display':'block'});
+          $('.details1, #service, #price').css({'display':'none'});
+          }
+        else {
+            $('.service').css({'display':'none'});
+            $('.details1').css({'display':'block'});
+            $.get("/rolesData", { roles: true}, function( data ) {
+            
+            for (i in data.role){
+              console.log(data.role[0])
+              }
+            
+              $("#addedServices").append("<br><b>Appended text</b>");
+              
+                
+                            
+            
+        
+        
+            })
+            }
+        })
+        }
+      syncUpdateRequest();
+
+
+
+
+
+    
+    const showDetailForms = ()=>{
+    $("document").ready(()=>{
+    $('.detailsform').css({'display':'block'});
+    $('.about').css({'display':'block'});
+    syncUpdateRequest()
+    
+    })
+
+      
+    }
+    const addService = () => {
+    $.ajax({
+      type: "POST",
+      url: '/addService',
+      data: {
+      service: $('#service').val(),
+      price: $('#price').val()
+      },
+      success: ()=> {
+      alert('Service Added');
+      }
+    });
+    }
+    
+    const upgradeAccount = () =>{
+    //- let status= $('#availability')[0].checked;
+      $.ajax({
+        type: "POST",
+        url: '/upgradeUser',
+        data: {
+          firstname: $('#firstname').val(),
+          lastname: $('#lastname').val(),
+          email: $('#email').val(),
+          street: $('#street').val(),
+          housenumber: $('#housenumber').val(),
+          postalcode: $('#postalcode').val(),
+          city: $('#city').val(),
+          phone: $('#phone').val(),
+          //- motto: $('#motto').val(),
+          //- aboutme: $('#aboutMeForm').val(),
+          //- availability: status,
+          serviceProvider: true,
+          //- service: service(),
+          //- price: price()
+        },
+        success: ()=> {
+          alert('DB Updated');
+          syncUpdateRequest();
+          //- updateProfile();
+          $('.detailsform').css({'display':'none'});
+          //- updateProfile();
+        }
+      });
+      
+      
+      //- console.log(status);
+    }
+
+  
 else 
     h2 You must log in first!

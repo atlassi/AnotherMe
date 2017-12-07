@@ -12,27 +12,46 @@ const app = express();
 
 
 const sequelize = new Sequelize('anotherme', process.env.POSTGRES_USER, process.env.POSTGRES_PASSWORD, {
-    host: 'localhost',
-    dialect: 'postgres',
-    storage: './session.postgres'
+  host: 'localhost',
+  dialect: 'postgres',
+  storage: './session.postgres'
 })
 app.use(express.static('../public'))
-app.use(bodyParser.urlencoded({ extended: true }))
+app.use(bodyParser.urlencoded({
+  extended: true
+}))
 
 app.set('view engine', 'pug')
 app.set('views', './views')
 
 //<--------session store--------->
 app.use(session({
-    store: new SequelizeStore({
-        db: sequelize,
-        checkExpirationInteral: 15 * 60 * 1000,
-        expiration: 24 * 60 * 60 * 1000
-    }),
-    secret: "another-me",
-    saveUninitialized: true,
-    resave: false
+  store: new SequelizeStore({
+    db: sequelize,
+    checkExpirationInteral: 15 * 60 * 1000,
+    expiration: 24 * 60 * 60 * 1000
+  }),
+  secret: "another-me",
+  saveUninitialized: true,
+  resave: false
 }))
+
+//<--------Multer----------->
+const multer = require('multer')
+const myStorage = multer.diskStorage({
+  destination: function(req, file, cb) {
+    cb(null, '../public/images/user-images')
+  },
+  filename: function(req, file, cb) {
+    cb(null, file.fieldname + '-' + Date.now())
+  }
+})
+const upload = multer({
+  storage: myStorage
+});
+
+
+
 
 //<----------Defining users table------------>
 const User = sequelize.define('users', {
@@ -42,22 +61,24 @@ const User = sequelize.define('users', {
   housenumber: Sequelize.STRING,
   street: Sequelize.STRING,
   city: Sequelize.STRING,
-	email: Sequelize.STRING,
-	password: Sequelize.STRING,
-	phone: Sequelize.INTEGER,
+  email: Sequelize.STRING,
+  password: Sequelize.STRING,
+  phone: Sequelize.INTEGER,
   aboutme: Sequelize.TEXT,
-  motto:Sequelize.TEXT,
-	availability: Sequelize.BOOLEAN,
-	serviceProvider: Sequelize.BOOLEAN
+  motto: Sequelize.TEXT,
+  availability: Sequelize.BOOLEAN,
+  serviceProvider: Sequelize.BOOLEAN,
+  profilePicture: Sequelize.STRING
 }, {
-    timestamps: false
-   })
+  timestamps: false
+})
 
 //<----------Defining user roles table------------>
-const Role = sequelize.define('roles',{
-	service: Sequelize.STRING,
-	price: Sequelize.STRING
-},{timestamps: false
+const Role = sequelize.define('roles', {
+  service: Sequelize.STRING,
+  price: Sequelize.STRING
+}, {
+  timestamps: false
 })
 
 //<----defining relation between tables---->
@@ -67,21 +88,21 @@ Role.belongsTo(User);
 //------------------------------------------------------------------------------
 //Routing
 //------------------------------------------------------------------------------
-//Home route
+// Home route
 app.get('/', (req, res) => {
   res.render('index');
 
 })
 
 app.get('/sessionUpdate', (req, res) => {
-res.send(req.session.user.firstname)
+  res.send(req.session.user.firstname)
 })
 
 
 //<----default page------->
-app.get('/home', (req,res)=>{
-	let user = req.session.user
-	res.render("home.pug")
+app.get('/home', (req, res) => {
+  // let user = req.session.user < What is the purpose of this?
+  res.render("home.pug")
 })
 
 //Signup page
@@ -91,7 +112,8 @@ app.get('/signup', (req, res) => {
 })
 
 //Create new user using data from signup page
-app.post('/createuser', (req, res) => {
+app.post('/createuser', upload.single('profileImage'), (req, res, next) => {
+  // let path = req.file.path.replace('public', '')
   if (req.body.password != req.body.password) {
     res.redirect('/?message=' + encodeURIComponent('Passwords need match'));
     return;
@@ -108,6 +130,7 @@ app.post('/createuser', (req, res) => {
         lastname: req.body.inputLastname,
         email: req.body.inputEmail,
         password: req.body.password
+        // profilePicture: path
       })
       .catch((error) => {
         console.log(error);
@@ -115,31 +138,41 @@ app.post('/createuser', (req, res) => {
     res.redirect('/');
   }
 })
-//<----------Profile------------->
-app.get('/profile', (req, res) => {
-
-  if (req.query.updateProfile){
-    User.findOne({
-      where: {
-        id:req.session.user.id
-      }
-    })
-    .then((user)=>{
-      res.send({
-        firstname: user.firstname,
-        lastname: user.lastname,
-        email: user.email,
-        street: street,
-        housenumber: housenumber,
-        phone:phone,
-        postalcode:postalcode,
-        city:city        
+//<-------------- Retrieve all user data rendering - NOT DONE
+app.get('/rolesData', (req, res) => {
+    Role.findAll({
+        where: {
+          userId: req.session.user.id
+        }
       })
-    })
-  }
-  else res.render('profile', {
-    usrProfile: req.session.user
-  })
+      .then((role) => {
+        res.send({
+          role: role
+        })
+      })
+
+
+})
+
+
+//<--------------retrieve all user data for rendering
+
+//<---------- Handle Sync request for recent user data------------>
+app.get('/syncUpdateRequest', (req, res) => {
+
+  if (req.query.syncUpdateRequest) {
+    User.findOne({
+        where: {
+          id: req.session.user.id
+        }
+      })
+      .then((user) => {
+        res.send({
+          user: user
+        })
+      })
+
+  } else return;
 })
 
 
@@ -183,148 +216,148 @@ app.post('/login', (req, res) => {
 
 //Profile route
 app.get('/profile', (req, res) => {
-  if (req.query.updateProfile){
+  if (req.session.user) {
     User.findOne({
-      where: {
-        id:req.session.user.id
-      }
-    })
-    .then((user)=>{
-      res.send({
-        firstname: user.firstname,
-        lastname: user.lastname,
-        email: user.email,
-        postalcode: postalcode,
-        housenumber: housenumber,
-        street: street,
-        city: city,
-        email: email,
-        phone: phone,
-        aboutme: aboutme,
-        motto:motto,
-        availability:availability,
-        serviceProvider:serviceProvider
-
+        where: {
+          id: req.session.user.id
+        }
       })
-    })
+      .then((user) => {
+        res.render('profile',{
+        usrProfile: user
+        })
+      })
   }
-  else res.render('profile', {
-    usrProfile: req.session.user
-  })
 })
 // Update route: Updates the profile details
 app.post('/updateUser', (req, res) => {
   User.update({
-    email: req.body.inputEmail,
-    firstname: req.body.inputFirstname,
-    lastname: req.body.inputLastname
-  }, {
-    where: {
-      id: req.session.user.id
-    }
-  })
+      email: req.body.inputEmail,
+      firstname: req.body.inputFirstname,
+      lastname: req.body.inputLastname
+    }, {
+      where: {
+        id: req.session.user.id
+      }
+    })
 
     .catch(function(error) {
       console.error(error)
     })
-    res.send();
+  res.send();
 
 })
 
 //Upgrade route: Upgrades account to a seller-account
 app.post('/upgradeUser', (req, res) => {
-  if (req.session.user.id){
-  User.update({
-    postalcode: req.body.postalcode,
-    housenumber: req.body.housenumber,
-    street: req.body.street,
-    city: req.body.city,
-    phone: req.body.phone,
-    aboutme: req.body.aboutme,
-    motto:req.body.motto,
-    availability: req.body.availability,
-    serviceProvider: true
-  }, {
-    where: {
-      id: req.session.user.id
-    }
-  })
-    .catch(function(error) {
-      console.error(error)
-    })
-    console.log(req.session.user + ' Account upgraded!');
-    res.send();
+  if (req.session.user.id) {
+    User.update({
+        firstname: req.body.firstname,
+        lastname: req.body.lastname,
+        email: req.body.email,
+        postalcode: req.body.postalcode,
+        housenumber: req.body.housenumber,
+        street: req.body.street,
+        city: req.body.city,
+        phone: req.body.phone,
+        aboutme: req.body.aboutme,
+        motto: req.body.motto,
+        availability: req.body.availability,
+        serviceProvider: true
+      }, {
+        where: {
+          id: req.session.user.id
+        }
+      }).then(() => {
+        console.log(req.session.user + ' Account upgraded!');
+        res.redirect('/profile');
+      })
+      .catch(function(error) {
+        console.error(error)
+      })
+
   }
-  else return;
 
 })
 
 app.post('/addService', (req, res) => {
-  if (req.session.user.id){
-  Role.create({
-    service: req.body.service,
-    price: req.body.price,
-    userId:req.session.user.id
-  })
-  .catch(function(error) {
-    console.error(error)
-  })
-  res.send({
-    service: 'wqef',
-    price: "req.body.price",
-  });
-}
+
+  if (req.session.user.id) {
+    Role.create({
+        service: req.body.service,
+        price: req.body.price,
+        userId: req.session.user.id
+      })
+      .catch(function(error) {
+        console.error(error)
+      })
+    res.send({
+      service2: 'FAKE : Service zit erin',
+      price2: "FAKE : Prize zit erin",
+    });
+  }
+})
+
+app.get('/upgrade', (req, res) => {
+
+  res.render('profile-upgraded')
 })
 
 
 
 
 //<--------------Search GET------------->
-app.get('/search',function(req,res){
-    Role.findAll()
-    .then(allroles=>{
-        console.log(`all roles--------------<${allroles}`)
-
-        res.render('search',{roles:allroles})
-
-    })
-
-})
+// app.get('/search', function(req, res) {
+//   Role.findAll()
+//     .then(allroles => {
+//       console.log(`all roles--------------<${allroles}`)
+//
+//       res.render('search', {
+//         roles: allroles
+//       })
+//
+//     })
+//
+// })
 
 //<-------AJAX request search bar--------->
-app.get('/submit',(req,res)=>{
-    var service = req.query.service;
-    console.log(`service input----------->${service}`)
-    Role.findAll({
-        where:{
-            service: service
-        },
-        include:[{
-            model: User
-        }]
-    }).then(users=>{
-        users = users.map(data=>{
-            return{
-                users: data.user
-            }
-        })
-        var output = users;
-        console.log(`users with service---------->${JSON.stringify(users)}`)
-        res.send({output:output})
-    }).catch(err=>{
-        console.log(err)
-    })
-
-})
+// app.get('/submit', (req, res) => {
+//   var service = req.query.service;
+//   console.log(`service input----------->${service}`)
+//   Role.findAll({
+//     where: {
+//       service: service
+//     },
+//     include: [{
+//       model: User
+//     }]
+//   }).then(users => {
+//     users = users.map(data => {
+//       return {
+//         users: data.user
+//       }
+//     })
+//     var output = users;
+//     console.log(`users with service---------->${JSON.stringify(users)}`)
+//     res.send({
+//       output: output
+//     })
+//   }).catch(err => {
+//     console.log(err)
+//   })
+//
+// })
 
 //<---test purpose--->
-app.get('/selected',(req,res)=>{
-    let input = req.query.selected;
-    console.log(`SELECTED NAME-------->${input}`)
-    let message =`hello ${input}`
-    res.send({message: message})
-
-})
+// app.get('/selected', (req, res) => {
+//   let input = req.query.selected;
+//   console.log(`SELECTED NAME-------->${input}`)
+//   let message = `hello ${input}`
+//   res.send({
+//     message: message
+//   })
+//
+// })
 //<--------Mumtaz's code-------->
 //
 // //<--------add roles-------->
@@ -351,20 +384,20 @@ app.get('/selected',(req,res)=>{
 
 
 app.post('/addService', (req, res) => {
-  if (req.session.user.id){
-  Role.create({
-    service: req.body.service,
-    price: req.body.price,
-    userId:req.session.user.id
-  })
-  .catch(function(error) {
-    console.error(error)
-  })
-  res.send({
-    service: 'wqef',
-    price: "req.body.price",
-  });
-}
+  if (req.session.user.id) {
+    Role.create({
+        service: req.body.service,
+        price: req.body.price,
+        userId: req.session.user.id
+      })
+      .catch(function(error) {
+        console.error(error)
+      })
+    res.send({
+      service: 'wqef',
+      price: "req.body.price",
+    });
+  }
 })
 
 
@@ -380,10 +413,9 @@ app.get('/logout', (req, res) => {
 
 
 sequelize.sync({
-  force:  false
-  }
-)
+  force: false
+})
 //<--------SERVER PORT----------->
 app.listen(3001, function() {
-    console.log("app is listening at port 3000")
+  console.log("app is listening at port 3000")
 })
