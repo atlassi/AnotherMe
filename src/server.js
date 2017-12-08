@@ -37,19 +37,16 @@ app.use(session({
 }))
 
 //<--------Multer----------->
-const multer = require('multer')
+const multer  = require('multer')
 const myStorage = multer.diskStorage({
-  destination: function(req, file, cb) {
-    cb(null, '../public/images/user-images')
-  },
-  filename: function(req, file, cb) {
-    cb(null, file.fieldname + '-' + Date.now())
-  }
+    destination: function (req, file, cb) {
+        cb(null, '../public/images/user-images')
+    },
+    filename: function (req, file, cb) {
+        cb(null, file.fieldname + '-' + Date.now())
+    }
 })
-const upload = multer({
-  storage: myStorage
-});
-
+const upload = multer({ storage: myStorage });
 
 
 
@@ -65,7 +62,6 @@ const User = sequelize.define('users', {
   password: Sequelize.STRING,
   phone: Sequelize.INTEGER,
   aboutme: Sequelize.TEXT,
-  motto: Sequelize.TEXT,
   availability: Sequelize.BOOLEAN,
   serviceProvider: Sequelize.BOOLEAN,
   profilePicture: Sequelize.STRING
@@ -111,9 +107,31 @@ app.get('/signup', (req, res) => {
   res.render('signup')
 })
 
+
+//Change password
+app.post('/changePassword', (req, res) => {
+      if (req.session.user.id) {
+        User.update({
+          password: req.body.newPassword,
+        }, {
+        where: {
+          id: req.session.user.id
+        }
+        })
+
+        .catch(function(error) {
+          console.error(error)
+        })
+        res.send();
+
+}
+
+})
+
+
 //Create new user using data from signup page
-app.post('/createuser', upload.single('profileImage'), (req, res, next) => {
-  // let path = req.file.path.replace('public', '')
+app.post('/createuser', upload.single('profileImage'), (req, res,next) => {
+  let path = req.file.path.replace('public', '')
   if (req.body.password != req.body.password) {
     res.redirect('/?message=' + encodeURIComponent('Passwords need match'));
     return;
@@ -129,10 +147,11 @@ app.post('/createuser', upload.single('profileImage'), (req, res, next) => {
         firstname: req.body.inputFirstname,
         lastname: req.body.inputLastname,
         email: req.body.inputEmail,
-        password: req.body.password
-        // profilePicture: path
+        password: req.body.password,
+        profilePicture: path
       })
-      .catch((error) => {
+      .catch((error) =>
+       {
         console.log(error);
       })
     res.redirect('/');
@@ -229,27 +248,30 @@ app.get('/profile', (req, res) => {
       })
   }
 })
+
+
 // Update route: Updates the profile details
-app.post('/updateUser', (req, res) => {
-  User.update({
-      email: req.body.inputEmail,
-      firstname: req.body.inputFirstname,
-      lastname: req.body.inputLastname
-    }, {
-      where: {
-        id: req.session.user.id
-      }
-    })
-
-    .catch(function(error) {
-      console.error(error)
-    })
-  res.send();
-
-})
+// app.post('/updateUser', (req, res) => {
+//   User.update({
+//       email: req.body.inputEmail,
+//       firstname: req.body.inputFirstname,
+//       lastname: req.body.inputLastname
+//     }, {
+//       where: {
+//         id: req.session.user.id
+//       }
+//     })
+//
+//     .catch(function(error) {
+//       console.error(error)
+//     })
+//   res.send();
+//
+// })
 
 //Upgrade route: Upgrades account to a seller-account
-app.post('/upgradeUser', (req, res) => {
+app.post('/updateDetails', (req, res) => {
+
   if (req.session.user.id) {
     User.update({
         firstname: req.body.firstname,
@@ -261,7 +283,6 @@ app.post('/upgradeUser', (req, res) => {
         city: req.body.city,
         phone: req.body.phone,
         aboutme: req.body.aboutme,
-        motto: req.body.motto,
         availability: req.body.availability,
         serviceProvider: true
       }, {
@@ -307,46 +328,46 @@ app.get('/upgrade', (req, res) => {
 
 
 //<--------------Search GET------------->
-// app.get('/search', function(req, res) {
-//   Role.findAll()
-//     .then(allroles => {
-//       console.log(`all roles--------------<${allroles}`)
-//
-//       res.render('search', {
-//         roles: allroles
-//       })
-//
-//     })
-//
-// })
+app.get('/search', function(req, res) {
+  Role.findAll()
+    .then(allroles => {
+      console.log(`all roles--------------<${allroles}`)
+
+      res.render('search', {
+        roles: allroles
+      })
+
+    })
+
+})
 
 //<-------AJAX request search bar--------->
-// app.get('/submit', (req, res) => {
-//   var service = req.query.service;
-//   console.log(`service input----------->${service}`)
-//   Role.findAll({
-//     where: {
-//       service: service
-//     },
-//     include: [{
-//       model: User
-//     }]
-//   }).then(users => {
-//     users = users.map(data => {
-//       return {
-//         users: data.user
-//       }
-//     })
-//     var output = users;
-//     console.log(`users with service---------->${JSON.stringify(users)}`)
-//     res.send({
-//       output: output
-//     })
-//   }).catch(err => {
-//     console.log(err)
-//   })
-//
-// })
+app.get('/submit', (req, res) => {
+  var service = req.query.service;
+  console.log(`service input----------->${service}`)
+  Role.findAll({
+    where: {
+      service: service
+    },
+    include: [{
+      model: User
+    }]
+  }).then(users => {
+    users = users.map(data => {
+      return {
+        users: data.user
+      }
+    })
+    var output = users;
+    console.log(`users with service---------->${JSON.stringify(users)}`)
+    res.send({
+      output: output
+    })
+  }).catch(err => {
+    console.log(err)
+  })
+
+})
 
 //<---test purpose--->
 // app.get('/selected', (req, res) => {
