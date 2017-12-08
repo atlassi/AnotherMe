@@ -145,6 +145,7 @@ padding-top: 20px;
 
 
 
+
 .profilepic{
 /*	background-color: lightgra*/y;
 	color: black;
@@ -175,6 +176,9 @@ padding-top: 20px;
 .edit{
 	background-color: black;
 	color: white;
+  width:80%;
+  margin:2px;
+
 }
 .edit:hover{
 	background-color: white;
@@ -200,5 +204,6 @@ padding-top: 20px;
 }
 .profileDetails p{
 	color: black;
+
 
 }

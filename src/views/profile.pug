@@ -14,7 +14,6 @@ body
 
     
 if usrProfile
-
   nav.navbar.navbar-default.nav
     .container
       .navbar-header
@@ -43,28 +42,21 @@ if usrProfile
         img(src=`${usrProfile.profilePicture}` width='60%')
         .profileDetails
           p Hi #{usrProfile.firstname} !
-          button.btn.btn-default.edit(type='') Edit 
+          button.btn.btn-default.edit(type='button',id='changePhoto' ) Change Photo
+          button.btn.btn-default.edit(type='button', id='changePassword', onclick='showPasswordFields()') Change password 
+          
     
         
-      
       .col-lg-4.details
         .service(style="display:none")
           img(src='images/serviceProvider.jpg', width= '25%')
           span(style="font-size:20px;") Start Earning money now!
           button.btn.btn-default.seller(type='submit' , onclick='showDetailForms()', id='btnSignUpSeller', style="background-color: skyblue; margin: -64px 2px 2px 180px;") SignUp as seller
-        .details1(style="display:block")
-          p
-            img(src="images/checkmark.png" width='4%')
-            |    Car repair € 30,00   
-          p
-            img(src="images/checkmark.png" width='4%')    
-            |    Lay tiles € 25,60    
-          p 
-            img(src="images/checkmark.png" width='4%')
-            |    Pick-up something € 25,60 p/h   
-
-
-          select.services.form-control.select(name = 'service')
+        .details1(style="display:none")
+          
+          div(id='addedServices')
+          br            
+          select.services.form-control.select( id='service')
             option(value="select service") Select Service
             option(value="Housekeeper") Housekeeper
             option(value="Electrician") Electrician
@@ -78,7 +70,9 @@ if usrProfile
             option(value="Accountant") Accountant
             option(value="Window Washer") Window Washer
             input(type='number', class="currencyinput", id='price', placeholder='Hourrate')
-        .details2
+            br
+            button.btn.btn-default.edit(type='submit' onclick='addService()') Add service
+        .details2(style="display:none")
           p
             img(src="images/pointer.png" width='6%') 
             |      #{usrProfile.city} (The Netherlands)  
@@ -106,13 +100,19 @@ if usrProfile
             br
             input.input.form-control(type='text', value=usrProfile.city, id='city', placeholder="Enter Your City" ,autocomplete='off')
             br
+            button.btn.btn-default.edit(type='submit' onclick='upgradeAccount()') Save
+      
+      .col-lg-4.passwordFields(style='display:none')
+         form.input-field1( id='passwordFields', autocomplete='off')
+            br
             input.input.form-control(type='text', placeholder='Enter old password', id='oldPassword')
             br
             input.input.form-control(type='text', placeholder='Enter new password', id='newPassword')
             br
             input.input.form-control(type='text', placeholder='Re-enter new password', id='newPassword2')
             br
-            button.btn.btn-default.edit(type='submit' onclick='upgradeAccount()') Save
+            button.btn.btn-default.edit(type='submit' onclick='changePassword()') Save
+                    
       .col-lg-1.space
 
   .container.about
@@ -137,26 +137,85 @@ if usrProfile
           a.mediaIcon(href="www.google.com" class="fa fa-google")
 
   script.
+    
+    const showPasswordFields = ()=>{
+    $("document").ready(()=>{
+    $('.passwordFields').css({'display':'block'});  
+    })
+    }
+    
+    const changePassword = () =>{
+    //- let status= $('#availability')[0].checked;
+      $.ajax({
+        type: "POST",
+        url: '/upgradeUser',
+        data: {
+          firstname: $('#firstname').val(),
+          lastname: $('#lastname').val(),
+          email: $('#email').val(),
+          street: $('#street').val(),
+          housenumber: $('#housenumber').val(),
+          postalcode: $('#postalcode').val(),
+          city: $('#city').val(),
+          phone: $('#phone').val(),
+          //- motto: $('#motto').val(),
+          //- aboutme: $('#aboutMeForm').val(),
+          //- availability: status,
+          serviceProvider: true,
+          //- service: service(),
+          //- price: price()
+        },
+        success: ()=> {
+          alert('DB Updated');
+          syncUpdateRequest();
+          //- updateProfile();
+          $('.detailsform').css({'display':'none'});
+          //- updateProfile();
+        }
+      });
+      
+      
+      //- console.log(status);
+    }
+  
     const syncUpdateRequest = ()=> {
       $.get("/syncUpdateRequest", { syncUpdateRequest: true}, function( data ) {
-      //- $('#firstname').val(data.firstname);
-      //- $('#lastname').attr("placeholder",`Lastname: ${data.lastname}`);
-      //- $('#email').attr("placeholder",`Email ${data.email}`);
-      });
-      }
+        
+          
+        if (data.user.serviceProvider === null){
+          $('.service').css({'display':'block'});
+          $('.details1, #service, #price').css({'display':'none'});
+          }
+        else {
+            $('.service').css({'display':'none'});
+            $('.details1, .details2').css({'display':'block'});
+  
+            $.get("/rolesData", { roles: true}, function( data ) {
+            //- console.log(JSON.stringify(data));
+            
+            for (i in data.role){
+              let service = data.role[i].service;
+              let price = data.role[i].price;
+                //- $("#checkMark").append(`<br>${service} € ${price}`);
+                $("#addedServices").append(`<br> <img src="images/checkmark.png"  width='4%'>  ${service} € ${price},- Per hour`);
+                //- $("#checkMark").html(`<br> <img src="checkmark.png">`);
+    
+                //- $("#checkMark").append(html(`<img src="checkmark.png" height="42" width="42">`));
+    
+              }
+            
+            
+            })
+            
+            }
+        })
+        }
       syncUpdateRequest();
 
 
 
-    const checkIfseller = ()=> {
-    $.get("/profile", { updateProfile: true}, function( data ) {
-    if (data.serviceProvider === true){  
-      
-      return true    
-      }
 
-    });
-    }
+
     
     const showDetailForms = ()=>{
     $("document").ready(()=>{
@@ -168,6 +227,19 @@ if usrProfile
 
       
     }
+    const addService = () => {
+    $.ajax({
+      type: "POST",
+      url: '/addService',
+      data: {
+      service: $('#service').val(),
+      price: $('#price').val()
+      },
+      success: ()=> {
+      alert('Service Added');
+      }
+    });
+    }
     
     const upgradeAccount = () =>{
     //- let status= $('#availability')[0].checked;
@@ -175,27 +247,27 @@ if usrProfile
         type: "POST",
         url: '/upgradeUser',
         data: {
-        firstname: $('#firstname').val(),
-        lastname: $('#lastname').val(),
-        email: $('#email').val(),
-        street: $('#street').val(),
-        housenumber: $('#housenumber').val(),
-        postalcode: $('#postalcode').val(),
-        city: $('#city').val(),
-        phone: $('#phone').val(),
-        //- motto: $('#motto').val(),
-        //- aboutme: $('#aboutMeForm').val(),
-        //- availability: status,
-        serviceProvider: true,
-        //- service: service(),
-        //- price: price()
+          firstname: $('#firstname').val(),
+          lastname: $('#lastname').val(),
+          email: $('#email').val(),
+          street: $('#street').val(),
+          housenumber: $('#housenumber').val(),
+          postalcode: $('#postalcode').val(),
+          city: $('#city').val(),
+          phone: $('#phone').val(),
+          //- motto: $('#motto').val(),
+          //- aboutme: $('#aboutMeForm').val(),
+          //- availability: status,
+          serviceProvider: true,
+          //- service: service(),
+          //- price: price()
         },
         success: ()=> {
-        alert('DB Updated');
-        syncUpdateRequest();
-        //- updateProfile();
-        $('.detailsform').css({'display':'none'});
-        //- updateProfile();
+          alert('DB Updated');
+          syncUpdateRequest();
+          //- updateProfile();
+          $('.detailsform').css({'display':'none'});
+          //- updateProfile();
         }
       });
       
