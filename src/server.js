@@ -87,7 +87,7 @@ Role.belongsTo(User);
 //------------------------------------------------------------------------------
 // Home route
 app.get('/', (req, res) => {
-  res.render('index');
+  res.render('home');
 
 })
 
@@ -97,9 +97,9 @@ app.get('/sessionUpdate', (req, res) => {
 
 
 //<----default page------->
-app.get('/home', (req, res) => {
+app.get('/login', (req, res) => {
   // let user = req.session.user < What is the purpose of this?
-  res.render("home.pug")
+  res.render("index")
 })
 
 //Signup page
@@ -348,17 +348,47 @@ app.get('/submit', (req, res) => {
 
 })
 
-//<---test purpose--->
-// app.get('/selected', (req, res) => {
-//   let input = req.query.selected;
-//   console.log(`SELECTED NAME-------->${input}`)
-//   let message = `hello ${input}`
-//   res.send({
-//     message: message
-//   })
-//
+//<------- AJAX getting the service provider profile--->
+app.get('/selected', (req, res) => {
+  let input = req.query.selected;
+  console.log(`SELECTED NAME-------->${input}`)
+  User.findAll({
+    where:{
+      firstname: input
+    },
+    include: [{
+      model: Role
+    }]
+  }).then(allDetails=>{
+    console.log(`all details------->${JSON.stringify(allDetails)}`)
+    allDetails = allDetails.map(serviceProviderDetails=>{
+      var columns = serviceProviderDetails.dataValues;
+
+      return{
+        firstname: columns.firstname,
+        lastname: columns.lastname,
+        email: columns.email,
+        phone: columns.phone,
+        aboutme: columns.aboutme,
+        city: columns.city,
+        profilePicture: columns.profilePicture,
+        role: columns.roles
+      }
+
+    }) 
+      console.log(`service providers details------>${JSON.stringify(allDetails)}`);
+    res.render('serviceProviderProfile',{allDetails: allDetails}) 
+  })
+  
+})
+
+// //<----------serviceProvider profile----------->
+// app.get('/serviceProviderProfile', (req,res)=>{
+
+
+
 // })
-//<--------Mumtaz's code-------->
+
 //
 // //<--------add roles-------->
 // app.post('/addroles',function(req,res){
