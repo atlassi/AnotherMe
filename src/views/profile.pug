@@ -10,6 +10,10 @@ head
   link(rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css")
   meta(http-equiv="content-type" content="text/html; charset=UTF-8")  
 body
+  
+
+    
+if usrProfile
   nav.navbar.navbar-default.nav
     .container
       .navbar-header
@@ -24,10 +28,10 @@ body
         li.active
           a(href='#') Profile
         li
-          a(href='#') Search
+          a(href='/search') Search
       ul.nav.navbar-nav.navbar-right
         li
-          a(href='#')
+          a(href='/logout')
             span.glyphicon.glyphicon-log-out.login-link
             |  Logout
 
@@ -35,56 +39,81 @@ body
     .rows
       .col-lg-1.space
       .col-lg-2.profilepic
-        img(src='images/profile.jpeg' width='60%')
+        img(src=`${usrProfile.profilePicture}` width='80%')
         .profileDetails
-          p Mechanic
-          p Hello!I'm a mechanic
+          p Hi #{usrProfile.firstname} !
           button.btn.btn-default.edit(type='') Edit 
-
+    
+        
       .col-lg-4.details
-        .details1
+        .service(style="display:none")
+          img(src='images/serviceProvider.jpg', width= '25%')
+          span(style="font-size:20px;") Start Earning money now!
+          button.btn.btn-default.seller(type='submit' , onclick='showDetailForms()', id='btnSignUpSeller', style="background-color: skyblue; margin: -64px 2px 2px 180px;") SignUp as seller
+        .details1(style="display:none")
+          
           p
-            img(src="images/checkmark.png" width='5%')
-            | Car repair € 30,00 
+            img(src="images/checkmark.png" width='4%')
+            |    Car repair € 30,00   
           p
-            img(src="images/checkmark.png" width='5%')    
-            | Lay tiles € 25,60 
+            img(src="images/checkmark.png" width='4%')    
+            |    Lay tiles € 25,60    
           p 
-            img(src="images/checkmark.png" width='5%')
-            | Pick-up something € 25,60 p/h
+            img(src="images/checkmark.png" width='4%')
+            |    Pick-up something € 25,60 p/h   
 
-          img(src="images/checkmark.png" width='5%') 
-          select.services.form-control.select(name = 'service')
-            option.option(value="") services
-            option.option(value="programmer") programmer
-            option.option(value="electrician") electrician
-            option.option(value="mechanic") mechanic
-        .details2
+        p(id='addedServices')
+          select.services.form-control.select( id='service')
+            option(value="select service") Select Service
+            option(value="Housekeeper") Housekeeper
+            option(value="Electrician") Electrician
+            option(value="Gardener") Gardener
+            option(value="Courier") Courier
+            option(value="Computer Technician") Computer Technician
+            option(value="Handyman") Handyman
+            option(value="Carpenter") Carpenter
+            option(value="Tiler") Tiler
+            option(value="Painter") Painter
+            option(value="Accountant") Accountant
+            option(value="Window Washer") Window Washer
+            input(type='number', class="currencyinput", id='price', placeholder='Hourrate')
+            br
+            button.btn.btn-default.edit(type='submit' onclick='addService()') Add service
+        .details2(style="display:none")
           p
-            img(src="images/pointer.png" width='10%') 
-            | Amsterdam (The Netherlands)
-            img(src="images/checkmark.png" width='5%')
+            img(src="images/pointer.png" width='6%') 
+            |      #{usrProfile.city} (The Netherlands)  
+    
           p 
-            img(src="images/wtsapp.jpg" width='10%') 
-            | +31 12345678
-            img(src="images/checkmark.png" width='5%')
+            img(src="images/wtsapp.jpg" width='5%') 
+            |      #{usrProfile.phone} 
+
       //- .col-lg-1.space
       .col-lg-4.detailsform
-         form.input-field1(action='/', method='post', autocomplete='off')
-            input.input.form-control(type='text', name='name', placeholder="Enter Your Name",autocomplete='off')
+         form.input-field1( id='detailsform', autocomplete='off')
+            input.input.form-control(type='text', id='firstname', value=usrProfile.firstname, placeholder=`Enter New Firstname` ,autocomplete='off')
             br
-            input.input.form-control(type='text', placeholder='example@email.com', name='email')
+            input.input.form-control(type='text', id='lastname', value=usrProfile.lastname, placeholder=`Enter New Lastname`, autocomplete='off')
             br
-            input.input.form-control(type='text', placeholder='Enter city', name='city')
+            input.input.form-control(type='text', id='email', value=value=usrProfile.email, placeholder=`Enter New E-mail` autocomplete='off')
             br
-            input.input.form-control(type='text', placeholder='Enter password', name='password')
+            input.input.form-control(type='text', value=usrProfile.street, id='street', placeholder="Enter Your Streetname" ,autocomplete='off')
             br
-            input.input.form-control(type='text', placeholder='', name='email')
+            input.input.form-control(type='text', value=usrProfile.housenumber, id='housenumber', placeholder="Enter Your Housenumber",autocomplete='off')
             br
-            input.input.form-control(type='text', placeholder='', name='city')
+            input.input.form-control(type='text', value=usrProfile.phone, id='phone', placeholder="Enter Your Phone",autocomplete='off')
             br
-            input.input.form-control.input1(type='text', placeholder='', name='password')
-            button.btn.btn-default.edit(type='submit') Save
+            input.input.form-control(type='text', value=usrProfile.postalcode, id='postalcode', placeholder="Enter Your Postalcode",autocomplete='off')
+            br
+            input.input.form-control(type='text', value=usrProfile.city, id='city', placeholder="Enter Your City" ,autocomplete='off')
+            br
+            input.input.form-control(type='text', placeholder='Enter old password', id='oldPassword')
+            br
+            input.input.form-control(type='text', placeholder='Enter new password', id='newPassword')
+            br
+            input.input.form-control(type='text', placeholder='Re-enter new password', id='newPassword2')
+            br
+            button.btn.btn-default.edit(type='submit' onclick='upgradeAccount()') Save
       .col-lg-1.space
 
   .container.about
@@ -93,8 +122,9 @@ body
       .col-lg-1.space
       .col-lg-8.abouttextArea
         p About Me
-        input.aboutMe.form-control(type='textarea', placeholder='write something about you!')
+        input.aboutMe.form-control(type='textarea', id='aboutMeForm', placeholder='write something about you!')
         button.btn.btn-default.edit(type='submit') Save
+
 
   .footer
     .container
@@ -107,7 +137,99 @@ body
           a.mediaIcon(href="www.twitter.com" class="fa fa-twitter")
           a.mediaIcon(href="www.google.com" class="fa fa-google")
 
+  script.
+  
+    const syncUpdateRequest = ()=> {
+      $.get("/syncUpdateRequest", { syncUpdateRequest: true}, function( data ) {
+        if (data.user.serviceProvider === null){
+          $('.service').css({'display':'block'});
+          $('.details1, #service, #price').css({'display':'none'});
+          }
+        else {
+            $('.service').css({'display':'none'});
+            $('.details1').css({'display':'block'});
+            $.get("/rolesData", { roles: true}, function( data ) {
+            
+            for (i in data.role){
+              console.log(data.role[0])
+              }
+            
+              $("#addedServices").append("<br><b>Appended text</b>");
+              
+                
+                            
+            
+        
+        
+            })
+            }
+        })
+        }
+      syncUpdateRequest();
 
 
 
 
+
+    
+    const showDetailForms = ()=>{
+    $("document").ready(()=>{
+    $('.detailsform').css({'display':'block'});
+    $('.about').css({'display':'block'});
+    syncUpdateRequest()
+    
+    })
+
+      
+    }
+    const addService = () => {
+    $.ajax({
+      type: "POST",
+      url: '/addService',
+      data: {
+      service: $('#service').val(),
+      price: $('#price').val()
+      },
+      success: ()=> {
+      alert('Service Added');
+      }
+    });
+    }
+    
+    const upgradeAccount = () =>{
+    //- let status= $('#availability')[0].checked;
+      $.ajax({
+        type: "POST",
+        url: '/upgradeUser',
+        data: {
+          firstname: $('#firstname').val(),
+          lastname: $('#lastname').val(),
+          email: $('#email').val(),
+          street: $('#street').val(),
+          housenumber: $('#housenumber').val(),
+          postalcode: $('#postalcode').val(),
+          city: $('#city').val(),
+          phone: $('#phone').val(),
+          //- motto: $('#motto').val(),
+          //- aboutme: $('#aboutMeForm').val(),
+          //- availability: status,
+          serviceProvider: true,
+          //- service: service(),
+          //- price: price()
+        },
+        success: ()=> {
+          alert('DB Updated');
+          syncUpdateRequest();
+          //- updateProfile();
+          $('.detailsform').css({'display':'none'});
+          //- updateProfile();
+        }
+      });
+      
+      
+      //- console.log(status);
+    }
+
+  
+else 
+    h2 You must log in first!

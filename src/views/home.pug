@@ -6,6 +6,7 @@ head
   
   link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css')
   link(rel="stylesheet", type="text/css", href="css/style.css")
+  link(rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css")
   script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js')
   script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js')
 body
@@ -19,7 +20,7 @@ body
         li
           a(href='#') contact us
         li
-          a(href='/search') Search
+          a(href='#') About us
       ul.nav.navbar-nav.navbar-right
         li
           a(href='/signup')
@@ -29,17 +30,46 @@ body
           a(href='/login')
             span.glyphicon.glyphicon-log-in
             |  Login
+
+  .slideshow    
+    .container
+      .rows
+
+        .col-lg-12
+          .w3-content.w3-section(style="max-width:500px")
+            img.mySlides.w3-animate-top(src="images/newbanner3.jpg", style="width:70%")
+            img.mySlides.w3-animate-bottom(src="images/newbanner4.jpg", style="width:100%")
+            img.mySlides.w3-animate-top(src="images/newbanner5.jpg", style="width:100%")
+      
+    script.
+      var myIndex = 0;
+      carousel();
+      function carousel() {
+      var i;
+      var x = document.getElementsByClassName("mySlides");
+      for (i = 0; i < x.length; i++) {
+      x[i].style.display = "none";
+      }
+      myIndex++;
+      if (myIndex > x.length) {myIndex = 1}
+      x[myIndex-1].style.display = "block";
+      setTimeout(carousel, 2500);
+      }
+
+
+
+
   
-  //- .footer
-  //-   .container
-  //-     .rows
-  //-       div.col-lg-4
-  //-         p.copyrights copyrights @ 2017 All rights reserved
-  //-       div.col-lg-4
-  //-       div.col-lg-4
-  //-         a.mediaIcon(href="https://www.facebook.com" class="fa fa-facebook")
-  //-         a.mediaIcon(href="https://www.twitter.com" class="fa fa-twitter")
-  //-         a.mediaIcon(href="https://www.google.com" class="fa fa-google")
+  .footer
+    .container
+      .rows
+        div.col-lg-4
+          p.copyrights copyrights @ 2017 All rights reserved
+        div.col-lg-4
+        div.col-lg-4
+          a.mediaIcon(href="https://www.facebook.com" class="fa fa-facebook")
+          a.mediaIcon(href="https://www.twitter.com" class="fa fa-twitter")
+          a.mediaIcon(href="https://www.google.com" class="fa fa-google")
 
 
 
