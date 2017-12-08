@@ -41,9 +41,11 @@ if usrProfile
       .col-lg-2.profilepic
         img(src=`${usrProfile.profilePicture}` width='60%')
         .profileDetails
-          p Hi #{usrProfile.firstname} !
-          button.btn.btn-default.edit(type='') Edit 
-    
+          p Hi  #{usrProfile.firstname} !
+          button.btn.btn-default.edit(type='button',id='changePhoto' ) Change Photo
+          button.btn.btn-default.edit(type='button', id='changePassword', onclick='showPasswordFields()') Change password 
+          button.btn.btn-default.edit(type='button', id='changeDetails', onclick='showDetailForms()') Change Details 
+          
         
       .col-lg-4.details
         .service(style="display:none")
@@ -52,17 +54,16 @@ if usrProfile
           button.btn.btn-default.seller(type='submit' , onclick='showDetailForms()', id='btnSignUpSeller', style="background-color: skyblue; margin: -64px 2px 2px 180px;") SignUp as seller
         .details1(style="display:none")
           
-          p
-            img(src="images/checkmark.png" width='4%')
-            |    Car repair € 30,00   
-          p
-            img(src="images/checkmark.png" width='4%')    
-            |    Lay tiles € 25,60    
-          p 
-            img(src="images/checkmark.png" width='4%')
-            |    Pick-up something € 25,60 p/h   
+          div(id='addedServices')
+          br
+        
 
-        p(id='addedServices')
+          input(type="checkbox", id='availability' style="float: left; margin-top: 5px;>")
+          div(style="margin-left: 25px;")
+            | I am currenlty available to offer my serivces
+
+          br
+          br         
           select.services.form-control.select( id='service')
             option(value="select service") Select Service
             option(value="Housekeeper") Housekeeper
@@ -107,13 +108,21 @@ if usrProfile
             br
             input.input.form-control(type='text', value=usrProfile.city, id='city', placeholder="Enter Your City" ,autocomplete='off')
             br
+          
+            br
+            button.btn.btn-default.edit(type='submit' onclick='sendDetails()') Save
+      
+      .col-lg-4.passwordFields(style='display:none')
+         form.input-field1( id='passwordFields', autocomplete='off')
+            br
             input.input.form-control(type='text', placeholder='Enter old password', id='oldPassword')
             br
             input.input.form-control(type='text', placeholder='Enter new password', id='newPassword')
             br
             input.input.form-control(type='text', placeholder='Re-enter new password', id='newPassword2')
             br
-            button.btn.btn-default.edit(type='submit' onclick='upgradeAccount()') Save
+            button.btn.btn-default.edit(type='button' onclick='sendPassword()') Save
+                    
       .col-lg-1.space
 
   .container.about
@@ -122,8 +131,8 @@ if usrProfile
       .col-lg-1.space
       .col-lg-8.abouttextArea
         p About Me
-        input.aboutMe.form-control(type='textarea', id='aboutMeForm', placeholder='write something about you!')
-        button.btn.btn-default.edit(type='submit') Save
+        input.aboutMe.form-control(type='textarea', value=usrProfile.aboutme id='aboutme', placeholder='write something about you!')
+        button.btn.btn-default.edit(type='button' onclick='sendDetails()') Save
 
 
   .footer
@@ -138,30 +147,61 @@ if usrProfile
           a.mediaIcon(href="www.google.com" class="fa fa-google")
 
   script.
+    
+    const showPasswordFields = ()=>{
+    $("document").ready(()=>{
+    $('.passwordFields').css({'display':'block'});  
+    })
+    }
+    
+  
+    const changePassword = () =>{
+      $.ajax({
+        type: "POST",
+        url: '/changePassword',
+        data: {
+          newPassword: $('#newPassword').val(),
+        },
+        success: ()=> {
+          alert('Password Updated');
+          $('#passwordFields').css({'display':'none'});
+        }
+      });
+        
+        
+        console.log(status);
+    }
   
     const syncUpdateRequest = ()=> {
       $.get("/syncUpdateRequest", { syncUpdateRequest: true}, function( data ) {
+        
+          
         if (data.user.serviceProvider === null){
           $('.service').css({'display':'block'});
           $('.details1, #service, #price').css({'display':'none'});
           }
         else {
+            $("#availability").prop( "checked", data.user.availability);
             $('.service').css({'display':'none'});
-            $('.details1').css({'display':'block'});
+            $('.details1, .details2').css({'display':'block'});
+  
             $.get("/rolesData", { roles: true}, function( data ) {
+            //- console.log(JSON.stringify(data));
             
             for (i in data.role){
-              console.log(data.role[0])
+              let service = data.role[i].service;
+              let price = data.role[i].price;
+                //- $("#checkMark").append(`<br>${service} € ${price}`);
+                $("#addedServices").append(`<br> <img src="images/checkmark.png"  width='4%'>  ${service} € ${price},- Per hour`);
+                //- $("#checkMark").html(`<br> <img src="checkmark.png">`);
+    
+                //- $("#checkMark").append(html(`<img src="checkmark.png" height="42" width="42">`));
+    
               }
             
-              $("#addedServices").append("<br><b>Appended text</b>");
-              
-                
-                            
             
-        
-        
             })
+            
             }
         })
         }
@@ -183,6 +223,7 @@ if usrProfile
       
     }
     const addService = () => {
+    sendDetails();
     $.ajax({
       type: "POST",
       url: '/addService',
@@ -196,38 +237,52 @@ if usrProfile
     });
     }
     
-    const upgradeAccount = () =>{
-    //- let status= $('#availability')[0].checked;
+    const sendDetails = () => {
+      let status= $('#availability')[0].checked;
+      console.log(status);
+      let newDetails = {
+        firstname: $('#firstname').val(),
+        lastname: $('#lastname').val(),
+        email: $('#email').val(),
+        street: $('#street').val(),
+        housenumber: $('#housenumber').val(),
+        postalcode: $('#postalcode').val(),
+        city: $('#city').val(),
+        phone: $('#phone').val(),
+        aboutme: $('#aboutme').val(),
+        availability: status,
+        serviceProvider: true
+        //- service: service(),
+        //- price: price()
+      }
+      updateProfile(newDetails, '/updateDetails')
+    
+    }
+    
+    const sendPassword = () => {
+    let newPassword = {
+      newPassword: $('#newPassword').val()
+    }
+    updateProfile(newPassword, '/changePassword')
+    }
+    
+    
+    const updateProfile = (data, route) =>{
       $.ajax({
         type: "POST",
-        url: '/upgradeUser',
-        data: {
-          firstname: $('#firstname').val(),
-          lastname: $('#lastname').val(),
-          email: $('#email').val(),
-          street: $('#street').val(),
-          housenumber: $('#housenumber').val(),
-          postalcode: $('#postalcode').val(),
-          city: $('#city').val(),
-          phone: $('#phone').val(),
-          //- motto: $('#motto').val(),
-          //- aboutme: $('#aboutMeForm').val(),
-          //- availability: status,
-          serviceProvider: true,
-          //- service: service(),
-          //- price: price()
-        },
+        url: route,
+        data: data,
         success: ()=> {
-          alert('DB Updated');
+          alert('Done!');
           syncUpdateRequest();
           //- updateProfile();
           $('.detailsform').css({'display':'none'});
           //- updateProfile();
         }
       });
-      
-      
-      //- console.log(status);
+    
+    
+      console.log(status);
     }
 
   
