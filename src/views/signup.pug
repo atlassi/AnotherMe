@@ -2,9 +2,29 @@ doctype html
 html(lang='en')
   head
     meta(charset='UTF-8')
-    title Login Blog Application
+    title Another me
     link(rel='stylesheet', href='css/login-signup.css')
   body
+    //- nav.navbar.navbar-default.nav
+    //- .container
+    //-   .navbar-header
+    //-     a.navbar-brand#logo(href='#') Another me
+    //-   ul.nav.navbar-nav
+    //-     li.active
+    //-       a(href='#') Home
+    //-     li
+    //-       a(href='#') contact us
+    //-     li
+    //-       a(href='/search') Search
+    //-   ul.nav.navbar-nav.navbar-right
+    //-     li
+    //-       a(href='/signup')
+    //-         span.glyphicon.glyphicon-user
+    //-         |  Sign Up
+    //-     li
+    //-       a(href='/login')
+    //-         span.glyphicon.glyphicon-log-in
+    //-         |  Login
     .log-form
       h2 Sign up
       form(action='/createuser', method='POST' autocomplete='off' enctype='multipart/form-data')

@@ -91,7 +91,7 @@ body
 
         for(var i=0; i<users.length; i++){
         console.log('user: ' + i + ': ' + users[i].users.firstname);
-        allUsers = allUsers +`<p><li><a>  ${users[i].users.firstname}</a>  near ${users[i].users.city}</li> <p> <br>`
+        allUsers = allUsers +`<p><li><a href='/selected?selected=${users[i].users.firstname}'>${users[i].users.firstname}</a>  near ${users[i].users.city}</li> <p> <br>`
        
          allLocations.push(users[i].users.city) ;
 
@@ -159,26 +159,11 @@ body
        }) // AJAX (GET) request to server
       }
       $('.display').html(`<li>${allUsers}</li>`)
-    });
-    
+  
 
-
-
-
-        $('a').click(function(){
-         var selected =  $(this).text()
-
-
-          $.get('/selected',{selected: selected},function(data){
-          var message = data.message;
-          console.log(message)
-
-          })
-
-        console.log("it worked")
-        })
 
         });//click event
+          });
   script(src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCUBwmEFhSp5rFul8nEfs2qHWHXs5M4kIU&callback=initMap"
        async defer)
 
