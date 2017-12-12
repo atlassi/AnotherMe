@@ -5,8 +5,10 @@ head
   meta(name='viewport', content='width=device-width, initial-scale=1')
   link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css')
   link(rel="stylesheet", type="text/css", href="css/style.css")
-  script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js')
-  script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js')
+  script(defer src='https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js')
+  script(async src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js')
+  script(async src='/js/profile.js')
+  
   link(rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css")
   meta(http-equiv="content-type" content="text/html; charset=UTF-8")  
 body
@@ -14,19 +16,13 @@ body
 
     
 if usrProfile
-  nav.navbar.navbar-default.nav
+  nav.navbar.navbar-inverse.nav
     .container
       .navbar-header
-        a.navbar-brand#logo(href='#') Another me
+        a.navbar-brand#logo(href='/search') Another me
       ul.nav.navbar-nav
-        li
-          a(href='/') Home
-        li
-          a(href='#') Contact us
-        li
-          a(href='#') About us
         li.active
-          a(href='#') Profile
+          a(href='/profile') Profile
         li
           a(href='/search') Search
       ul.nav.navbar-nav.navbar-right
@@ -39,7 +35,7 @@ if usrProfile
     .rows
       .col-lg-1.space
       .col-lg-2.profilepic
-        img(src=`${usrProfile.profilePicture}` width='80%')
+        img(src=`${usrProfile.profilePicture}` class="rounded-circle" width='80%')
         .profileDetails
           p Hi  #{usrProfile.firstname} !
           button.btn.btn-default.edit(type='button',id='changePhoto' ) Change Photo
@@ -47,13 +43,12 @@ if usrProfile
           button.btn.btn-default.edit(type='button', id='changeDetails', onclick='showDetailForms()') Change Details 
           
         
-      .col-lg-4.details
+      .col-lg-3.details
         .service(style="display:none")
-          img(src='images/serviceProvider.jpg', width= '25%')
+          img(src='images/serviceProvider.png', width= '25%')
           span(style="font-size:20px;") Start Earning money now!
           button.btn.btn-default.seller(type='submit' , onclick='showDetailForms()', id='btnSignUpSeller', style="background-color: skyblue; margin: -64px 2px 2px 180px;") SignUp as seller
-        .details1(style="display:none")
-          
+        .details1(style="display:none")          
           div(id='addedServices')
           br
         
@@ -63,8 +58,11 @@ if usrProfile
             | I am currenlty available to offer my serivces
 
           br
-          br         
-          select.services.form-control.select( id='service')
+          br
+          form
+            
+             
+          select.services.form-control.select( id='service' )
             option(value="select service") Select Service
             option(value="Housekeeper") Housekeeper
             option(value="Electrician") Electrician
@@ -77,17 +75,18 @@ if usrProfile
             option(value="Painter") Painter
             option(value="Accountant") Accountant
             option(value="Window Washer") Window Washer
-            input(type='number', class="currencyinput", id='price', placeholder='Hourrate')
+              label(for="usr") Name:
+              input.form-control(type="number" id='price', placeholder='Hourrate')
             br
             button.btn.btn-default.edit(type='submit' onclick='addService()') Add service
-        .details2(style="display:none")
-          p
-            img(src="images/pointer.png" width='6%') 
-            |      #{usrProfile.city} (The Netherlands)  
-    
-          p 
-            img(src="images/wtsapp.jpg" width='5%') 
-            |      #{usrProfile.phone} 
+          .details2(style="display:none")
+            p
+              img(src="images/pointer.png" width='6%') 
+              |      #{usrProfile.city} (The Netherlands)  
+      
+            p 
+              img(src="images/wtsapp.jpg" width='5%') 
+              |      #{usrProfile.phone} 
 
       //- .col-lg-1.space
       .col-lg-4.detailsform
@@ -107,9 +106,6 @@ if usrProfile
             input.input.form-control(type='text', value=usrProfile.postalcode, id='postalcode', placeholder="Enter Your Postalcode",autocomplete='off')
             br
             input.input.form-control(type='text', value=usrProfile.city, id='city', placeholder="Enter Your City" ,autocomplete='off')
-            br
-          
-            br
             button.btn.btn-default.edit(type='submit' onclick='sendDetails()') Save
       
       .col-lg-4.passwordFields(style='display:none')
@@ -134,157 +130,17 @@ if usrProfile
         input.aboutMe.form-control(type='textarea', value=usrProfile.aboutme id='aboutme', placeholder='write something about you!')
         button.btn.btn-default.edit(type='button' onclick='sendDetails()') Save
 
-
   .footer
     .container
-      .rows
-        div.col-lg-4
-          p.copyrights copyrights @ 2017 All rights reserved
-        div.col-lg-4
-        div.col-lg-4
-          a.mediaIcon(href="www.facebook.com" class="fa fa-facebook")
-          a.mediaIcon(href="www.twitter.com" class="fa fa-twitter")
-          a.mediaIcon(href="www.google.com" class="fa fa-google")
-
-  script.
-    
-    const showPasswordFields = ()=>{
-    $("document").ready(()=>{
-    $('.passwordFields').css({'display':'block'});  
-    })
-    }
-    
-  
-    const changePassword = () =>{
-      $.ajax({
-        type: "POST",
-        url: '/changePassword',
-        data: {
-          newPassword: $('#newPassword').val(),
-        },
-        success: ()=> {
-          alert('Password Updated');
-          $('#passwordFields').css({'display':'none'});
-        }
-      });
-        
-        
-        console.log(status);
-    }
-  
-    const syncUpdateRequest = ()=> {
-      $.get("/syncUpdateRequest", { syncUpdateRequest: true}, function( data ) {
-        
-          
-        if (data.user.serviceProvider === null){
-          $('.service').css({'display':'block'});
-          $('.details1, #service, #price').css({'display':'none'});
-          }
-        else {
-            $("#availability").prop( "checked", data.user.availability);
-            $('.service').css({'display':'none'});
-            $('.details1, .details2').css({'display':'block'});
-  
-            $.get("/rolesData", { roles: true}, function( data ) {
-            //- console.log(JSON.stringify(data));
-            
-            for (i in data.role){
-              let service = data.role[i].service;
-              let price = data.role[i].price;
-                //- $("#checkMark").append(`<br>${service} € ${price}`);
-                $("#addedServices").append(`<br> <img src="images/checkmark.png"  width='4%'>  ${service} € ${price},- Per hour`);
-                //- $("#checkMark").html(`<br> <img src="checkmark.png">`);
-    
-                //- $("#checkMark").append(html(`<img src="checkmark.png" height="42" width="42">`));
-    
-              }
-            
-            
-            })
-            
-            }
-        })
-        }
-      syncUpdateRequest();
+      .footer-logo
+        a(href="#")
+          img(src="img/anotherme.png", alt="")
+      span.copyright © AnotherMe. All Rights Reserved
+      .credits
+        a(href="https://bootstrapmade.com/bootstrap-agency-templates/") Bootstrap Agency Templates
+        |  by 
+        a(href="https://bootstrapmade.com/") Mumtaz & Mustafa
 
 
-
-
-
-    
-    const showDetailForms = ()=>{
-    $("document").ready(()=>{
-    $('.detailsform').css({'display':'block'});
-    $('.about').css({'display':'block'});
-    syncUpdateRequest()
-    
-    })
-
-      
-    }
-    const addService = () => {
-    sendDetails();
-    $.ajax({
-      type: "POST",
-      url: '/addService',
-      data: {
-      service: $('#service').val(),
-      price: $('#price').val()
-      },
-      success: ()=> {
-      alert('Service Added');
-      }
-    });
-    }
-    
-    const sendDetails = () => {
-      let status= $('#availability')[0].checked;
-      console.log(status);
-      let newDetails = {
-        firstname: $('#firstname').val(),
-        lastname: $('#lastname').val(),
-        email: $('#email').val(),
-        street: $('#street').val(),
-        housenumber: $('#housenumber').val(),
-        postalcode: $('#postalcode').val(),
-        city: $('#city').val(),
-        phone: $('#phone').val(),
-        aboutme: $('#aboutme').val(),
-        availability: status,
-        serviceProvider: true
-        //- service: service(),
-        //- price: price()
-      }
-      updateProfile(newDetails, '/updateDetails')
-    
-    }
-    
-    const sendPassword = () => {
-    let newPassword = {
-      newPassword: $('#newPassword').val()
-    }
-    updateProfile(newPassword, '/changePassword')
-    }
-    
-    
-    const updateProfile = (data, route) =>{
-      $.ajax({
-        type: "POST",
-        url: route,
-        data: data,
-        success: ()=> {
-          alert('Done!');
-          syncUpdateRequest();
-          //- updateProfile();
-          $('.detailsform').css({'display':'none'});
-          //- updateProfile();
-        }
-      });
-    
-    
-      console.log(status);
-    }
-
-  
 else 
     h2 You must log in first!
