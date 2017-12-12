@@ -249,7 +249,6 @@ app.get('/profile', (req, res) => {
   }
 })
 
-
 // Update route: Updates the profile details
 app.post('/updateUser', (req, res) => {
   User.update({
@@ -262,25 +261,12 @@ app.post('/updateUser', (req, res) => {
       }
     })
 
+    .catch(function(error) {
+      console.error(error)
+    })
+  res.send();
 
-// Update route: Updates the profile details
-// app.post('/updateUser', (req, res) => {
-//   User.update({
-//       email: req.body.inputEmail,
-//       firstname: req.body.inputFirstname,
-//       lastname: req.body.inputLastname
-//     }, {
-//       where: {
-//         id: req.session.user.id
-//       }
-//     })
-//
-//     .catch(function(error) {
-//       console.error(error)
-//     })
-//   res.send();
-//
-// })
+})
 
 //Upgrade route: Upgrades account to a seller-account
 app.post('/updateDetails', (req, res) => {
@@ -313,27 +299,7 @@ app.post('/updateDetails', (req, res) => {
   }
 
 })
-
-app.post('/addService', (req, res) => {
-
-  if (req.session.user.id) {
-    Role.create({
-        service: req.body.service,
-        price: req.body.price,
-        userId: req.session.user.id
-      })
-      .catch(function(error) {
-        console.error(error)
-      })
-    res.send({
-      service2: 'FAKE : Service zit erin',
-      price2: "FAKE : Prize zit erin",
-    });
-  }
-})
-
 app.get('/upgrade', (req, res) => {
-
   res.render('profile-upgraded')
 })
 
@@ -382,6 +348,7 @@ app.get('/submit', (req, res) => {
 
 })
 
+
 //<------- AJAX getting the service provider profile--->
 app.get('/selected', (req, res) => {
   let input = req.query.selected;
@@ -418,6 +385,7 @@ app.get('/selected', (req, res) => {
 
 // //<----------serviceProvider profile----------->
 // app.get('/serviceProviderProfile', (req,res)=>{
+
 
 
 
