@@ -38,12 +38,11 @@ if usrProfile
         img(src=`${usrProfile.profilePicture}` class="rounded-circle" width='80%')
         .profileDetails
           p Hi  #{usrProfile.firstname} !
-          button.btn.btn-default.edit(type='button',id='changePhoto' ) Change Photo
           button.btn.btn-default.edit(type='button', id='changePassword', onclick='showPasswordFields()') Change password 
           button.btn.btn-default.edit(type='button', id='changeDetails', onclick='showDetailForms()') Change Details 
           
         
-      .col-lg-3.details
+      .col-lg-4.details
         .service(style="display:none")
           img(src='images/serviceProvider.png', width= '25%')
           span(style="font-size:20px;") Start Earning money now!
@@ -81,6 +80,7 @@ if usrProfile
             button.btn.btn-default.edit(type='submit' onclick='addService()') Add service
           .details2(style="display:none")
             p
+              br
               img(src="images/pointer.png" width='6%') 
               |      #{usrProfile.city} (The Netherlands)  
       
@@ -89,7 +89,7 @@ if usrProfile
               |      #{usrProfile.phone} 
 
       //- .col-lg-1.space
-      .col-lg-4.detailsform
+      .col-lg-3.detailsform
          form.input-field1( id='detailsform', autocomplete='off')
             input.input.form-control(type='text', id='firstname', value=usrProfile.firstname, placeholder=`Enter New Firstname` ,autocomplete='off')
             br
@@ -130,16 +130,7 @@ if usrProfile
         input.aboutMe.form-control(type='textarea', value=usrProfile.aboutme id='aboutme', placeholder='write something about you!')
         button.btn.btn-default.edit(type='button' onclick='sendDetails()') Save
 
-  .footer
-    .container
-      .footer-logo
-        a(href="#")
-          img(src="img/anotherme.png", alt="")
-      span.copyright © AnotherMe. All Rights Reserved
-      .credits
-        a(href="https://bootstrapmade.com/bootstrap-agency-templates/") Bootstrap Agency Templates
-        |  by 
-        a(href="https://bootstrapmade.com/") Mumtaz & Mustafa
+  
 
 
 else 

@@ -74,13 +74,16 @@ h3 {
   right: 0;
   bottom: 0;
   left: 0;
-  background-color: #a55959;
+  background-color: black;
   text-align: center;
   color: white;
   margin: 12px 0px 0px 0px;
-  height: 300px;
+  height: 200px;
 }
 
+.passwordFields{
+  background-color: #d3d3d38f;
+}
 .copyrights {
   padding: 14px 2px 2px 2px;
   font-size: 14px;
