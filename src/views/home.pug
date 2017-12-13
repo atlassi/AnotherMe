@@ -1,7 +1,6 @@
 doctype html
 head
   title Another Me
-  title Another Me
   meta(charset='utf-8')
   meta(name='viewport', content='width=device-width, initial-scale=1')
   link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css')
@@ -32,42 +31,16 @@ body
             span.glyphicon.glyphicon-log-in
             |  Login
 
-  .slideshow    
-    .container
-      .rows
-        .col-lg-2
-        .col-lg-8
-          img.mySlides(src="images/banner4.jpg", style="width:100%")
-          img.mySlides(src="images/banner3.jpg", style="width:100%")
-          img.mySlides(src="images/newbanner4.jpg", style="width:100%")
-          img.mySlides(src="images/newbanner5.jpg", style="width:100%")
-  .container
-    section(style="background-image: url('images/newbanner4.jpg'); width: '50%';")
-      
+    
     
   
 
 
-  script.
-    var myIndex = 0;
-    carousel();
-    function carousel() {
-    var i;
-    var x = document.getElementsByClassName("mySlides");
-    for (i = 0; i < x.length; i++) {
-    x[i].style.display = "none";
-    }
-    myIndex++;
-    if (myIndex > x.length) {myIndex = 1}
-    x[myIndex-1].style.display = "block";
-    setTimeout(carousel, 2500);
-    }
-
 
 
 
   
-  .footer
+  .footerHome
     .container
       .rows
         div.col-lg-4

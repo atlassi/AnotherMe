@@ -86,7 +86,7 @@ Role.belongsTo(User);
 //------------------------------------------------------------------------------
 // Home route
 app.get('/', (req, res) => {
-  res.render('home');
+  res.render('index');
 
 })
 
@@ -94,12 +94,6 @@ app.get('/sessionUpdate', (req, res) => {
   res.send(req.session.user.firstname)
 })
 
-
-//<----default page------->
-app.get('/login', (req, res) => {
-  // let user = req.session.user < What is the purpose of this?
-  res.render("index")
-})
 
 //Signup page
 app.get('/signup', (req, res) => {
